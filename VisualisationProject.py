@@ -3,19 +3,6 @@ import pandas as pd
 import numpy as np
 
 
-# Create pitch plot
-pitch_width = 120
-pitch_height = 80
-fig, ax = createPitch(pitch_width, pitch_height, "yards", "gray")
-
-st.title("Soccer game information")
-
-# Create pitch plot
-pitch_width = 120
-pitch_height = 80
-fig, ax = createPitch(pitch_width, pitch_height, "yards", "gray")
-
-
 def load_data(nrows):
     data = pd.read_csv("Dataset/events_World_Cup.csv", nrows=nrows)
 
