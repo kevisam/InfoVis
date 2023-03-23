@@ -1,0 +1,2 @@
+# InfoVis
+Soccer visualisation project
