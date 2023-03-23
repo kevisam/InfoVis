@@ -17,7 +17,7 @@ fig, ax = createPitch(pitch_width, pitch_height, "yards", "gray")
 
 
 def load_data(nrows):
-    data = pd.read_csv("Database/events_World_Cup.csv", nrows=nrows)
+    data = pd.read_csv("Dataset/events_World_Cup.csv", nrows=nrows)
 
     return data
 
