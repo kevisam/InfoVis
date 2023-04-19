@@ -3,22 +3,24 @@ from matplotlib import pyplot as plt
 
 
 def load_data(nrows):
-    data = pd.read_csv("dataset/events_World_Cup.csv", nrows=nrows)
+    """ Loads and returns the football data """
 
+    data = pd.read_csv("dataset/events_World_Cup.csv", nrows=nrows)
     return data
 
 
 def get_match(matchId):
+    """ For a given match ID, returns the match data in a pandas dataframe """
+
     data = pd.read_csv("dataset/events_World_Cup.csv")
     matches_with_id = data[data["matchId"] == matchId]
-
     return matches_with_id
 
 
 def get_team_side(matchId, teamId):
+    """ For a given match ID, and team ID returns the side on which the team plays on the pitch """
     data = pd.read_csv("dataset/events_World_Cup.csv")
     match = get_match(matchId)
-
     unique_team_ids = match["teamId"].unique()
 
     team_right = max(unique_team_ids)
@@ -30,14 +32,15 @@ def get_team_side(matchId, teamId):
         return "left"
 
 
-def simple_pass_map(matchId, pitch_height, pitch_width, ax):
-    match_events = get_match(matchId)
+def simple_pass_render(pitch_height, pitch_width, match_id, game_time, ax):
+    """ For a given match ID and game time, returns plot elements that visualize the passes in the form of arrows """
+    match = get_match(match_id)
+    simple_pass_events = match[match["subEventName"] == "Simple pass"]
+    simple_pass_events = match[match["eventSec"] <= game_time*60]
 
-    simple_pass_events = match_events[match_events["subEventName"] == "Simple pass"]
-
-    for event in simple_pass_events.iterrows():
-        circle = plt.Circle(
-            (event["pos_orig_x"], event["pos_orig_y"]), 1, color="red", alpha=0.5
-        )
-        ax.add_patch(circle)
+    for idx, event in simple_pass_events.iterrows():
+        start_point = (event["pos_orig_x"]/100*pitch_width, event["pos_orig_y"]/100*pitch_height)
+        end_point = (event["pos_dest_x"]/100*pitch_width, event["pos_dest_y"]/100*pitch_height)
+        ax.annotate('', xy=end_point, xytext=start_point,
+            arrowprops=dict(facecolor='red', edgecolor='red', arrowstyle='->'))
     return ax
