@@ -1,4 +1,5 @@
 import pandas as pd
+from matplotlib import pyplot as plt
 
 
 def load_data(nrows):
@@ -7,15 +8,16 @@ def load_data(nrows):
     return data
 
 
-def get_match(data, matchId):
-    # Filter the matches with ID 0
+def get_match(matchId):
+    data = pd.read_csv("Dataset/events_World_Cup.csv")
     matches_with_id = data[data["matchId"] == matchId]
 
     return matches_with_id
 
 
-def get_team_side(data, matchId, teamId):
-    match = get_match(data, matchId)
+def get_team_side(matchId, teamId):
+    data = pd.read_csv("Dataset/events_World_Cup.csv")
+    match = get_match(matchId)
 
     unique_team_ids = match["teamId"].unique()
 
@@ -26,3 +28,16 @@ def get_team_side(data, matchId, teamId):
         return "right"
     else:
         return "left"
+
+
+def simple_pass_map(matchId, pitch_height, pitch_width, ax):
+    match_events = get_match(matchId)
+
+    simple_pass_events = match_events[match_events["subEventName"] == "Simple pass"]
+
+    for event in simple_pass_events.iterrows():
+        circle = plt.Circle(
+            (event["pos_orig_x"], event["pos_orig_y"]), 1, color="red", alpha=0.5
+        )
+        ax.add_patch(circle)
+    return ax
