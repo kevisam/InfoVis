@@ -5,7 +5,7 @@ import utils.visual_functions as visual
 import utils.helper_functions as helper
 import plotly.graph_objects as go
 
-match_id = 2057954
+
 
 ###############################
 # === Define page objects === #
@@ -17,11 +17,13 @@ pitch_height = 60
 fig, ax = visual.createPitch(pitch_width, pitch_height, "green")
 
 
+
 ##########################
 # === Render sidebar === #
 ##########################
 
 # TODO: Drop-down menu to select the match.
+match_id = 2057954
 
 # TODO: Drop-down menu to select the team (choose between team1_name, team2_name, or both).
 
@@ -31,6 +33,7 @@ fig, ax = visual.createPitch(pitch_width, pitch_height, "green")
 match = helper.get_match(match_id)
 events = match["subEventName"].unique().tolist()
 selected_event = st.sidebar.selectbox("Select an event type:", events)
+
 
 
 #######################
@@ -71,9 +74,16 @@ if selected_event == "Simple pass":
 else:
     pass
 
+
+
+#######################
+# === Render pitch === #
+#######################
+
 # Render pitch
 fig.set_size_inches(15, 10)
 st.pyplot(fig)
+
 
 
 #######################
