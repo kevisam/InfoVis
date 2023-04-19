@@ -49,7 +49,7 @@ st.title('Football Game Statistics Visualized')
 # Render introduction
 st.markdown(
     """
-    This app allows for the visualization of different actions and events that occurred during World Cup football matches. The visualizations can be controlled using a time slider.
+    This app allows for the visualization of different actions and events that occurred during the football matches in 2016, 2017, and 2018. The visualizations can be controlled using a time slider.
     """
     )
 
