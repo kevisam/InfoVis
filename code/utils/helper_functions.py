@@ -3,20 +3,20 @@ from matplotlib import pyplot as plt
 
 
 def load_data(nrows):
-    data = pd.read_csv("Dataset/events_World_Cup.csv", nrows=nrows)
+    data = pd.read_csv("dataset/events_World_Cup.csv", nrows=nrows)
 
     return data
 
 
 def get_match(matchId):
-    data = pd.read_csv("Dataset/events_World_Cup.csv")
+    data = pd.read_csv("dataset/events_World_Cup.csv")
     matches_with_id = data[data["matchId"] == matchId]
 
     return matches_with_id
 
 
 def get_team_side(matchId, teamId):
-    data = pd.read_csv("Dataset/events_World_Cup.csv")
+    data = pd.read_csv("dataset/events_World_Cup.csv")
     match = get_match(matchId)
 
     unique_team_ids = match["teamId"].unique()
