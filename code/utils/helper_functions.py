@@ -33,14 +33,15 @@ def get_team_side(matchId, teamId):
         return "left"
 
 
-def simple_pass_render(pitch_height, pitch_width, match_id, game_time, ax):
+def simple_pass_render(pitch_height, pitch_width, match_id, game_time, time_window, ax):
     """ For a given match ID and game time, returns plot elements that visualize the passes in the form of arrows """
 
     match = get_match(match_id)
-    simple_pass_events = match[match["subEventName"] == "Simple pass"]
-    simple_pass_events = match[match["eventSec"] <= game_time*60]
+    data = match[match["subEventName"] == "Simple pass"]
+    data = data[data["eventSec"] >= game_time*60]
+    data = data[data["eventSec"] <= game_time*60 + time_window*60]
 
-    for idx, event in simple_pass_events.iterrows():
+    for idx, event in data.iterrows():
         start_point = (event["pos_orig_x"]/100*pitch_width, event["pos_orig_y"]/100*pitch_height)
         end_point = (event["pos_dest_x"]/100*pitch_width, event["pos_dest_y"]/100*pitch_height)
         ax.annotate('', xy=end_point, xytext=start_point,

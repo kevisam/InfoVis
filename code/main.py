@@ -34,6 +34,9 @@ match = helper.get_match(match_id)
 events = match["subEventName"].unique().tolist()
 selected_event = st.sidebar.selectbox("Select an event type:", events)
 
+# Drop-down menu to select the time window.
+time_window = st.sidebar.number_input("Select time window (minutes): ", step=1, value=1)
+
 
 
 #######################
@@ -51,15 +54,13 @@ st.markdown(
     )
 
 # Render header
-st.subheader('Event visualizer.')
-st.markdown(
-    """
-    The visualization below shows the chosen event performed during a chosen match, team(s), and player(s), controlled by the time slider (in minutes) below.
-    """
-    )
+st.write("");st.write("")
+st.subheader('Event visualizer')
+
 
 # Render slider
-game_time = st.slider(label=" ", 
+slider_label = "The visualization below shows the locations of events for a chosen event type, performed during a particular match, chosen team(s). Events can be filtered by team or even by player. The time window (in minutes) can be adjusted in the sidebar. The starting time (in minutes) can be set using the slider below."
+game_time = st.slider(label=slider_label, 
                       min_value=0,
                       max_value=120,
                       step=1)
@@ -70,6 +71,7 @@ if selected_event == "Simple pass":
                             pitch_width=pitch_width,
                             match_id=2057954, 
                             game_time=game_time, 
+                            time_window=time_window,
                             ax=ax)
 else:
     pass
@@ -89,4 +91,8 @@ st.pyplot(fig)
 #######################
 # === For testing === #
 #######################
+
+# Render raw data
+st.write("");st.write("")
+st.subheader('Raw data')
 st.write(helper.get_match(match_id))
