@@ -21,6 +21,8 @@ fig, ax = visual.createPitch(pitch_width, pitch_height, "green")
 # === Render sidebar === #
 ##########################
 
+# TODO: Drop-down menu to select the match.
+
 # TODO: Drop-down menu to select the team (choose between team1_name, team2_name, or both).
 
 # TODO: Drop-down menu to select the player.
