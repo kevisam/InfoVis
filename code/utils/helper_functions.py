@@ -19,6 +19,7 @@ def get_match(matchId):
 
 def get_team_side(matchId, teamId):
     """ For a given match ID, and team ID returns the side on which the team plays on the pitch """
+    
     data = pd.read_csv("dataset/events_World_Cup.csv")
     match = get_match(matchId)
     unique_team_ids = match["teamId"].unique()
@@ -34,6 +35,7 @@ def get_team_side(matchId, teamId):
 
 def simple_pass_render(pitch_height, pitch_width, match_id, game_time, ax):
     """ For a given match ID and game time, returns plot elements that visualize the passes in the form of arrows """
+
     match = get_match(match_id)
     simple_pass_events = match[match["subEventName"] == "Simple pass"]
     simple_pass_events = match[match["eventSec"] <= game_time*60]
