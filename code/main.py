@@ -59,8 +59,9 @@ st.write("")
 st.subheader("Event visualizer")
 
 # Render slider
+end_time = 60 if (match["matchPeriod"] == "1H").any() else 120
 slider_label = "The visualization below shows the locations of events for a chosen event type, performed during a particular match, chosen team(s). Events can be filtered by team or even by player. The time window (in minutes) can be adjusted in the sidebar. The starting time (in minutes) can be set using the slider below."
-game_time = st.slider("Select a time period", 0, 120, (0, 5), step=1)
+game_time = st.slider("Select a time period: ", 0, end_time, (0, 5), step=1)
 
 
 ################################
