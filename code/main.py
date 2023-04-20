@@ -58,16 +58,14 @@ st.write("")
 st.write("")
 st.subheader("Event visualizer")
 
-
 # Render slider
 slider_label = "The visualization below shows the locations of events for a chosen event type, performed during a particular match, chosen team(s). Events can be filtered by team or even by player. The time window (in minutes) can be adjusted in the sidebar. The starting time (in minutes) can be set using the slider below."
-# game_time = st.slider(label=slider_label,
-#                       min_value=0,
-#                       max_value=120,
+game_time = st.slider("Select a time period", 0, 120, (0, 5), step=1)
 
-#                       step=1)
 
-game_time = st.slider("Select a time period", 0, 120, (0, 45), step=1)
+################################
+# === Define pitch objects === #
+################################
 
 # Define arrows on pitch
 if "Simple pass" in selected_events:
