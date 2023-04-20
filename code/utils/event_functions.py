@@ -4,8 +4,6 @@ import streamlit as st
 def simple_pass_render(pitch_height, pitch_width, match, game_time, color, ax):
     """For a given match ID and game time, returns plot elements that visualize the simple passes in the form of arrows"""
 
-    st.write(game_time)
-
     # get match data
     data = match[match["subEventName"] == "Simple pass"]
     data = data[data["eventSec"] >= game_time[0] * 60]
