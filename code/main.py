@@ -1,9 +1,9 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import utils.event_functions as event
 import utils.visual_functions as visual
 import utils.helper_functions as helper
-import plotly.graph_objects as go
 
 
 
@@ -16,6 +16,11 @@ pitch_width = 100
 pitch_height = 60
 fig, ax = visual.createPitch(pitch_width, pitch_height, "green")
 
+# Define available colors (available = 1 ; not available = 0)
+colors = {
+    'Simple pass': 'blue',
+    'High pass': 'red',
+}
 
 
 ##########################
@@ -32,7 +37,7 @@ match_id = 2057954
 # Drop-down menu to select the event type.
 match = helper.get_match(match_id)
 events = match["subEventName"].unique().tolist()
-selected_event = st.sidebar.selectbox("Select an event type:", events)
+selected_events = st.sidebar.multiselect("Select an event type:", events)
 
 # Drop-down menu to select the time window.
 time_window = st.sidebar.number_input("Select time window (minutes): ", step=1, value=1)
@@ -66,15 +71,23 @@ game_time = st.slider(label=slider_label,
                       step=1)
 
 # Define arrows on pitch
-if selected_event == "Simple pass":
-    helper.simple_pass_render(pitch_height=pitch_height,
-                            pitch_width=pitch_width,
-                            match_id=2057954, 
-                            game_time=game_time, 
-                            time_window=time_window,
-                            ax=ax)
-else:
-    pass
+if "Simple pass" in selected_events:
+    ax = event.simple_pass_render(pitch_height=pitch_height,
+                                  pitch_width=pitch_width,
+                                  match=match, 
+                                  game_time=game_time, 
+                                  time_window=time_window,
+                                  color=colors["Simple pass"],
+                                  ax=ax)
+
+if "High pass" in selected_events:
+    ax = event.high_pass_render(pitch_height=pitch_height,
+                                pitch_width=pitch_width,
+                                match=match, 
+                                game_time=game_time, 
+                                time_window=time_window,
+                                color=colors["High pass"],
+                                ax=ax)
 
 
 
