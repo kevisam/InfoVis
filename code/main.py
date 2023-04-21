@@ -134,6 +134,10 @@ st.write("")
 st.write("")
 st.subheader("Event visualizer")
 
+selected_match_name, selected_match_datetime = selected_match.replace(")", "").split("(")
+date, time = selected_match_datetime.split(" ")
+st.markdown(f"You are now visualizing the game of &nbsp; '{selected_match_name}' &nbsp; from the perspective of {selected_team}. This match took place on {date} and started at {time}.")
+
 # Render slider
 default_period = (0,3)
 slider_label = "The visualization below shows the locations of events for a chosen event type, performed during a particular match, chosen team(s). \
@@ -179,11 +183,11 @@ if "High pass" in selected_events:
 # Render pitch
 fig.update_layout(
     title={
-        "text": selected_match,
-        "font": {"size": 24},
+        "text": selected_match.split("(")[0],
+        "font": {"size": 20},
         "xanchor": "center",
         "x": 0.5, # set x to 0.5 for center alignment
-        "y": 0.95 # adjust y position for desired vertical alignment
+        "y": 0.92 # adjust y position for desired vertical alignment
     }
 )
 st.plotly_chart(fig)
