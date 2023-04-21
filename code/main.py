@@ -58,7 +58,11 @@ selected_match_team_names = (all_teams.loc[all_teams['wyId'] == int(match_teamId
                         all_teams.loc[all_teams['wyId'] == int(match_teamIds[1]), 'officialName'].iloc[0])
 selected_team = st.sidebar.selectbox("Select a team:", selected_match_team_names)
 selected_teamId = all_teams.loc[all_teams['officialName'] == selected_team, 'wyId'].iloc[0]
-
+## get team side
+if selected_match.startswith(selected_team):
+    team_side = "left"
+else:
+    team_side = "right"
 
 # Filter title
 st.sidebar.title(" ")
@@ -151,7 +155,8 @@ if "Simple pass" in selected_events:
         game_time=game_time,
         color=colors["Simple pass"],
         fig=fig,
-        player_data=selected_players_dict
+        player_data=selected_players_dict,
+        team_side=team_side
     )
 
 if "High pass" in selected_events:
@@ -162,7 +167,8 @@ if "High pass" in selected_events:
         game_time=game_time,
         color=colors["High pass"],
         fig=fig,
-        player_data=selected_players_dict
+        player_data=selected_players_dict,
+        team_side=team_side
     )
 
 

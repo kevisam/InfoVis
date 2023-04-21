@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 
-def simple_pass_render(pitch_length, pitch_width, match, game_time, color, fig, player_data):
+def simple_pass_render(pitch_length, pitch_width, match, game_time, color, fig, player_data, team_side):
     """For a given match ID and game time, returns plot elements that visualize the simple passes in the form of arrows"""
 
     # get match data
@@ -13,14 +13,18 @@ def simple_pass_render(pitch_length, pitch_width, match, game_time, color, fig, 
     # create plot elements
     for idx, event in data.iterrows():
         # get position coordinates
-        start_point = (
+        start_point = [
             event["pos_orig_x"] / 100 * pitch_length + 0.5,
             event["pos_orig_y"] / 100 * pitch_width + 0.5,
-        )
-        end_point = (
+        ]
+        end_point = [
             event["pos_dest_x"] / 100 * pitch_length,
             event["pos_dest_y"] / 100 * pitch_width,
-        )
+        ]
+        # adjust positions based on team side
+        if team_side == "right":
+            start_point[0] = pitch_length - start_point[0]
+            end_point[0] = pitch_length - end_point[0]
         
         # get player data
         player_id = event['playerId']
@@ -60,7 +64,7 @@ def simple_pass_render(pitch_length, pitch_width, match, game_time, color, fig, 
     return fig
 
 
-def high_pass_render(pitch_length, pitch_width, match, game_time, color, fig, player_data):
+def high_pass_render(pitch_length, pitch_width, match, game_time, color, fig, player_data, team_side):
     """For a given match ID and game time, returns plot elements that visualize the simple passes in the form of arrows"""
     
     # get match data
@@ -71,14 +75,18 @@ def high_pass_render(pitch_length, pitch_width, match, game_time, color, fig, pl
     # create plot elements
     for idx, event in data.iterrows():
         # get position coordinates
-        start_point = (
+        start_point = [
             event["pos_orig_x"] / 100 * pitch_length + 0.5,
             event["pos_orig_y"] / 100 * pitch_width + 0.5,
-        )
-        end_point = (
+        ]
+        end_point = [
             event["pos_dest_x"] / 100 * pitch_length,
             event["pos_dest_y"] / 100 * pitch_width,
-        )
+        ]
+         # adjust positions based on team side
+        if team_side == "right":
+            start_point[0] = pitch_length - start_point[0]
+            end_point[0] = pitch_length - end_point[0]
 
         # get player data
         player_id = event['playerId']
