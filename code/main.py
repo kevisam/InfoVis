@@ -68,6 +68,10 @@ for i in range(len(all_match_player_names)):
 filter_by_player = st.sidebar.checkbox("Filter by player")
 if filter_by_player:
     selected_players = st.sidebar.multiselect("Select a player:", all_match_player_names)
+    # re-encode selected player for search in dataset
+    for i in range(len(selected_players)):
+        encoded_string = selected_players[i].encode('unicode-escape').decode()
+        selected_players[i] = encoded_string
     ## store player data
     selected_players_dict = {}
     for player_name in selected_players:
