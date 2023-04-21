@@ -53,13 +53,14 @@ def simple_pass_render(pitch_length, pitch_width, match, game_time, color, fig, 
             showarrow=True,
             arrowcolor=color,
             arrowwidth=3,
+            opacity=0.8,
             hovertext = f"Name: &nbsp; {name}<br>" \
                 + f"Role: &nbsp; {role}<br>" \
                 + f"Age: &nbsp; {age}<br>" \
                 + f"Height: &nbsp; {height}cm<br>" \
                 + f"Weight: &nbsp; {weight}kg<br>" \
                 + f"Foot: &nbsp; {foot}<br>" \
-                + f"Country: &nbsp; {country}<br>" \
+                + f"Country: &nbsp; {country}<br>"
         )
     return fig
 
@@ -115,12 +116,13 @@ def high_pass_render(pitch_length, pitch_width, match, game_time, color, fig, pl
             showarrow=True,
             arrowcolor=color,
             arrowwidth=3,
+            opacity=0.8,
             hovertext = f"Name: &nbsp; {name}<br>" \
                 + f"Role: &nbsp; {role}<br>" \
                 + f"Age: &nbsp; {age}<br>" \
                 + f"Height: &nbsp; {height}cm<br>" \
                 + f"Weight: &nbsp; {weight}kg<br>" \
                 + f"Foot: &nbsp; {foot}<br>" \
-                + f"Country: &nbsp; {country}<br>" \
+                + f"Country: &nbsp; {country}<br>"
         )
     return fig
