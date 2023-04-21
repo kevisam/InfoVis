@@ -1,7 +1,7 @@
 import streamlit as st
 
 
-def simple_pass_render(pitch_height, pitch_width, match, game_time, color, ax):
+def simple_pass_render(pitch_length, pitch_width, match, game_time, color, ax):
     """For a given match ID and game time, returns plot elements that visualize the simple passes in the form of arrows"""
 
     # get match data
@@ -12,12 +12,12 @@ def simple_pass_render(pitch_height, pitch_width, match, game_time, color, ax):
     # create plot elements
     for idx, event in data.iterrows():
         start_point = (
-            event["pos_orig_x"] / 100 * pitch_width,
-            event["pos_orig_y"] / 100 * pitch_height,
+            event["pos_orig_x"] / 100 * pitch_length,
+            event["pos_orig_y"] / 100 * pitch_width,
         )
         end_point = (
-            event["pos_dest_x"] / 100 * pitch_width,
-            event["pos_dest_y"] / 100 * pitch_height,
+            event["pos_dest_x"] / 100 * pitch_length,
+            event["pos_dest_y"] / 100 * pitch_width,
         )
         ax.annotate(
             "",
@@ -28,7 +28,7 @@ def simple_pass_render(pitch_height, pitch_width, match, game_time, color, ax):
     return ax
 
 
-def high_pass_render(pitch_height, pitch_width, match, game_time, color, ax):
+def high_pass_render(pitch_length, pitch_width, match, game_time, color, ax):
     """For a given match ID and game time, returns plot elements that visualize the simple passes in the form of arrows"""
     # get match data
     data = match[match["subEventName"] == "High pass"]
@@ -38,12 +38,12 @@ def high_pass_render(pitch_height, pitch_width, match, game_time, color, ax):
     # create plot elements
     for idx, event in data.iterrows():
         start_point = (
-            event["pos_orig_x"] / 100 * pitch_width,
-            event["pos_orig_y"] / 100 * pitch_height,
+            event["pos_orig_x"] / 100 * pitch_length,
+            event["pos_orig_y"] / 100 * pitch_width,
         )
         end_point = (
-            event["pos_dest_x"] / 100 * pitch_width,
-            event["pos_dest_y"] / 100 * pitch_height,
+            event["pos_dest_x"] / 100 * pitch_length,
+            event["pos_dest_y"] / 100 * pitch_width,
         )
         ax.annotate(
             "",

@@ -12,9 +12,9 @@ import utils.helper_functions as helper
 ###############################
 
 # Define football pitch
-pitch_width = 100
-pitch_height = 60
-fig, ax = visual.createPitch(pitch_width, pitch_height, "green")
+pitch_length = 100
+pitch_width = 60
+fig, ax = visual.createPitch(pitch_length, pitch_width)
 
 # Define available colors (available = 1 ; not available = 0)
 colors = {
@@ -125,7 +125,7 @@ game_time = st.slider("Select a time period: ", 0, 120, (0, 5), step=1)
 # Define arrows on pitch
 if "Simple pass" in selected_events:
     ax = event.simple_pass_render(
-        pitch_height=pitch_height,
+        pitch_length=pitch_length,
         pitch_width=pitch_width,
         match=filtered_match_events,
         game_time=game_time,
@@ -135,7 +135,7 @@ if "Simple pass" in selected_events:
 
 if "High pass" in selected_events:
     ax = event.high_pass_render(
-        pitch_height=pitch_height,
+        pitch_length=pitch_length,
         pitch_width=pitch_width,
         match=filtered_match_events,
         game_time=game_time,
