@@ -1,12 +1,31 @@
 import pandas as pd
 
-# remove unnecessary columns
-df = pd.read_csv("./code/dataset/events_World_Cup.csv")
-df.drop('eventId', axis=1, inplace=True)
-df.drop('eventName', axis=1, inplace=True)
-df.drop('subEventId', axis=1, inplace=True)
-df.drop('tags', axis=1, inplace=True)
-df.drop('tagsList', axis=1, inplace=True)
-df.drop('positions', axis=1, inplace=True)
+# get events and remove unnecessary columns
+events = pd.read_csv("./code/dataset/data_raw/events_World_Cup.csv")
+events.drop('eventId', axis=1, inplace=True)
+events.drop('eventName', axis=1, inplace=True)
+events.drop('subEventId', axis=1, inplace=True)
+events.drop('tags', axis=1, inplace=True)
+events.drop('tagsList', axis=1, inplace=True)
+events.drop('positions', axis=1, inplace=True)
 
-df.to_csv("./code/dataset/cleaned_data.csv", index=False)
+# get match labels
+matches = pd.read_csv("./code/dataset/data_raw/matches_World_Cup.csv")
+matches = matches[["dateutc", "wyId", "label", "teamsData"]]
+matches['match_name'] = matches.apply(lambda x: f"{x['label']} ({x['dateutc']})", axis=1)
+matches.drop('dateutc', axis=1, inplace=True)
+matches.drop('label', axis=1, inplace=True)
+
+# get teams
+teams = pd.read_csv("./code/dataset/data_raw/teams.csv")
+teams = teams[["wyId", "officialName"]]
+
+# print
+print(events)
+print(matches)
+print(teams)
+
+# store data
+events.to_csv("./code/dataset/data_clean/clean_events_data.csv", index=False)
+matches.to_csv("./code/dataset/data_clean/clean_matches_data.csv", index=False)
+teams.to_csv("./code/dataset/data_clean/clean_teams_data.csv", index=False)
