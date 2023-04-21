@@ -131,7 +131,7 @@ st.write("")
 st.subheader("Event visualizer")
 
 # Render slider
-default_period = (0,2)
+default_period = (0,3)
 slider_label = "The visualization below shows the locations of events for a chosen event type, performed during a particular match, chosen team(s). \
     Events can be filtered by team or even by player. The time window (in minutes) can be adjusted in the sidebar. \
         The starting time (in minutes) can be set using the slider below."
