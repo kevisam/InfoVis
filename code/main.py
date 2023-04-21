@@ -60,8 +60,12 @@ all_match_events = helper.get_match_events(matchId=matchId,
 all_match_playerIds = all_match_events["playerId"].unique().tolist()
 all_match_player_data = all_players[all_players["wyId"].isin(all_match_playerIds)]
 all_match_player_names = all_match_player_data['shortName'].unique().tolist()
+## decode names to support unicode characters
+for i in range(len(all_match_player_names)):
+    decoded_string = all_match_player_names[i].encode().decode('unicode_escape')
+    all_match_player_names[i] = decoded_string
+## create checkbox to filter by player
 filter_by_player = st.sidebar.checkbox("Filter by player")
-
 if filter_by_player:
     selected_players = st.sidebar.multiselect("Select a player:", all_match_player_names)
     ## store player data
