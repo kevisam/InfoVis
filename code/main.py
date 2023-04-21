@@ -1,20 +1,34 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
 import json
 import utils.event_functions as event
-import utils.visual_functions as visual
 import utils.helper_functions as helper
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly_football_pitch import (
+    make_pitch_figure,
+    PitchDimensions,
+    SingleColourBackground
+)
 
 
 ###############################
 # === Define page objects === #
 ###############################
 
+# Pitch dimensions
+pitch_length = 104.75
+pitch_width = 67.75
+dimensions = PitchDimensions()
+
 # Define football pitch
-pitch_length = 100
-pitch_width = 60
-fig, ax = visual.createPitch(pitch_length, pitch_width)
+fig = make_pitch_figure(
+    dimensions,
+    pitch_background=SingleColourBackground("#81B622"),
+)
+fig.update_layout(
+    width=700,
+    height=600
+)
 
 # Define available colors (available = 1 ; not available = 0)
 colors = {
@@ -72,14 +86,19 @@ if filter_by_player:
     for i in range(len(selected_players)):
         encoded_string = selected_players[i].encode('unicode-escape').decode()
         selected_players[i] = encoded_string
-    ## store player data
+    ## store filtered player data
     selected_players_dict = {}
     for player_name in selected_players:
         player_data = all_players[all_players['shortName'] == player_name]
         playerId = player_data['wyId'].iloc[0]
-        selected_players_dict[playerId] = player_data
+        selected_players_dict[playerId] = player_data.iloc[0].to_dict() 
     selected_player_Ids = selected_players_dict.keys()
 else:
+    ## store all player data
+    selected_players_dict = {}
+    for idx, row in all_match_player_data.iterrows():
+        wyId = row['wyId']
+        selected_players_dict[wyId] = row.to_dict()
     selected_player_Ids = "all"
 
 # Drop-down menu to select the event type
@@ -112,10 +131,11 @@ st.write("")
 st.subheader("Event visualizer")
 
 # Render slider
+default_period = (0,2)
 slider_label = "The visualization below shows the locations of events for a chosen event type, performed during a particular match, chosen team(s). \
     Events can be filtered by team or even by player. The time window (in minutes) can be adjusted in the sidebar. \
         The starting time (in minutes) can be set using the slider below."
-game_time = st.slider("Select a time period: ", 0, 120, (0, 5), step=1)
+game_time = st.slider("Select a time period: ", 0, 120, default_period, step=1)
 
 
 ################################
@@ -124,23 +144,25 @@ game_time = st.slider("Select a time period: ", 0, 120, (0, 5), step=1)
 
 # Define arrows on pitch
 if "Simple pass" in selected_events:
-    ax = event.simple_pass_render(
+    fig = event.simple_pass_render(
         pitch_length=pitch_length,
         pitch_width=pitch_width,
         match=filtered_match_events,
         game_time=game_time,
         color=colors["Simple pass"],
-        ax=ax,
+        fig=fig,
+        player_data=selected_players_dict
     )
 
 if "High pass" in selected_events:
-    ax = event.high_pass_render(
+    fig = event.high_pass_render(
         pitch_length=pitch_length,
         pitch_width=pitch_width,
         match=filtered_match_events,
         game_time=game_time,
         color=colors["High pass"],
-        ax=ax,
+        fig=fig,
+        player_data=selected_players_dict
     )
 
 
@@ -149,9 +171,7 @@ if "High pass" in selected_events:
 #######################
 
 # Render pitch
-fig.set_size_inches(15, 10)
-st.pyplot(fig)
-
+st.plotly_chart(fig)
 
 #######################
 # === For testing === #
