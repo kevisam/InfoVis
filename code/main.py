@@ -171,6 +171,15 @@ if "High pass" in selected_events:
 #######################
 
 # Render pitch
+fig.update_layout(
+    title={
+        "text": selected_match,
+        "font": {"size": 24},
+        "xanchor": "center",
+        "x": 0.5, # set x to 0.5 for center alignment
+        "y": 0.95 # adjust y position for desired vertical alignment
+    }
+)
 st.plotly_chart(fig)
 
 #######################
