@@ -20,12 +20,22 @@ matches.drop('label', axis=1, inplace=True)
 teams = pd.read_csv("./code/dataset/data_raw/teams.csv")
 teams = teams[["wyId", "officialName"]]
 
+# get players
+players = pd.read_csv("./code/dataset/data_raw/players.csv")
+players.drop('birthArea', axis=1, inplace=True)
+players.drop('firstName', axis=1, inplace=True)
+players.drop('middleName', axis=1, inplace=True)
+players.drop('lastName', axis=1, inplace=True)
+players.drop('currentNationalTeamId', axis=1, inplace=True)
+
 # print
 print(events)
 print(matches)
 print(teams)
+print(players)
 
 # store data
 events.to_csv("./code/dataset/data_clean/clean_events_data.csv", index=False)
 matches.to_csv("./code/dataset/data_clean/clean_matches_data.csv", index=False)
 teams.to_csv("./code/dataset/data_clean/clean_teams_data.csv", index=False)
+players.to_csv("./code/dataset/data_clean/clean_players_data.csv", index=False)

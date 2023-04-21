@@ -27,25 +27,59 @@ colors = {
 # === Render sidebar === #
 ##########################
 
-# Drop-down menu to select the match.
+# Sidebar title
+st.sidebar.title("Match settings")
+
+# Drop-down menu to select the match
 all_matches = helper.load_all_matches()
 all_match_names = all_matches["match_name"].unique().tolist()
 selected_match = st.sidebar.selectbox("Select a match:", all_match_names)
 
-# Drop-down menu to select the team (choose between team1_name, team2_name, or both).
-teamIds = list(json.loads((all_matches.loc[all_matches['match_name'] == selected_match, 'teamsData'].iloc[0]).replace("'", "\"")).keys())
+# Drop-down menu to select the team
+match_teamsData = json.loads((all_matches.loc[all_matches['match_name'] == selected_match, 
+                                        'teamsData'].iloc[0]).replace("'", "\""))
+match_teamIds = list(match_teamsData.keys())
 all_teams = helper.load_all_teams()
-selected_match_teams = (all_teams.loc[all_teams['wyId'] == int(teamIds[0]), 'officialName'].iloc[0],
-                        all_teams.loc[all_teams['wyId'] == int(teamIds[1]), 'officialName'].iloc[0])
-selected_team = st.sidebar.selectbox("Select a team:", selected_match_teams)
+selected_match_team_names = (all_teams.loc[all_teams['wyId'] == int(match_teamIds[0]), 'officialName'].iloc[0],
+                        all_teams.loc[all_teams['wyId'] == int(match_teamIds[1]), 'officialName'].iloc[0])
+selected_team = st.sidebar.selectbox("Select a team:", selected_match_team_names)
 selected_teamId = all_teams.loc[all_teams['officialName'] == selected_team, 'wyId'].iloc[0]
 
-# TODO: Drop-down menu to select the player.
 
-# Drop-down menu to select the event type.
-match_id = all_matches.loc[all_matches['match_name'] == selected_match, 'wyId'].iloc[0]
-match_events = helper.get_match_events(matchId=match_id, all_events_data=helper.load_all_events(), teamId=selected_teamId)
-event_names = match_events["subEventName"].unique().tolist()
+# Filter title
+st.sidebar.title(" ")
+st.sidebar.title("Filter settings")
+
+# Drop-down menu to select the player
+matchId = all_matches.loc[all_matches['match_name'] == selected_match, 'wyId'].iloc[0]
+all_players = helper.load_all_players()
+all_match_events = helper.get_match_events(matchId=matchId, 
+                                       all_events_data=helper.load_all_events(), 
+                                       teamId=selected_teamId, 
+                                       players="all")
+all_match_playerIds = all_match_events["playerId"].unique().tolist()
+all_match_player_data = all_players[all_players["wyId"].isin(all_match_playerIds)]
+all_match_player_names = all_match_player_data['shortName'].unique().tolist()
+filter_by_player = st.sidebar.checkbox("Filter by player")
+
+if filter_by_player:
+    selected_players = st.sidebar.multiselect("Select a player:", all_match_player_names)
+    ## store player data
+    selected_players_dict = {}
+    for player_name in selected_players:
+        player_data = all_players[all_players['shortName'] == player_name]
+        playerId = player_data['wyId'].iloc[0]
+        selected_players_dict[playerId] = player_data
+    selected_player_Ids = selected_players_dict.keys()
+else:
+    selected_player_Ids = "all"
+
+# Drop-down menu to select the event type
+filtered_match_events = helper.get_match_events(matchId=matchId, 
+                                       all_events_data=helper.load_all_events(), 
+                                       teamId=selected_teamId, 
+                                       players=selected_player_Ids)
+event_names = filtered_match_events["subEventName"].unique().tolist()
 selected_events = st.sidebar.multiselect("Select an event type:", event_names)
 
 
@@ -59,7 +93,8 @@ st.title("Football Game Statistics Visualized")
 # Render introduction
 st.markdown(
     """
-    This app allows for the visualization of different actions and events that occurred during the 2018 World Cup matches. The visualizations can be controlled using a time slider.
+    This app allows for the visualization of different actions and events that occurred during the 2018 World Cup matches. \
+        The visualizations can be controlled using a time slider.
     """
 )
 
@@ -69,9 +104,10 @@ st.write("")
 st.subheader("Event visualizer")
 
 # Render slider
-end_time = 60 if (match_events["matchPeriod"] == "1H").any() else 120
-slider_label = "The visualization below shows the locations of events for a chosen event type, performed during a particular match, chosen team(s). Events can be filtered by team or even by player. The time window (in minutes) can be adjusted in the sidebar. The starting time (in minutes) can be set using the slider below."
-game_time = st.slider("Select a time period: ", 0, end_time, (0, 5), step=1)
+slider_label = "The visualization below shows the locations of events for a chosen event type, performed during a particular match, chosen team(s). \
+    Events can be filtered by team or even by player. The time window (in minutes) can be adjusted in the sidebar. \
+        The starting time (in minutes) can be set using the slider below."
+game_time = st.slider("Select a time period: ", 0, 120, (0, 5), step=1)
 
 
 ################################
@@ -83,7 +119,7 @@ if "Simple pass" in selected_events:
     ax = event.simple_pass_render(
         pitch_height=pitch_height,
         pitch_width=pitch_width,
-        match=match_events,
+        match=filtered_match_events,
         game_time=game_time,
         color=colors["Simple pass"],
         ax=ax,
@@ -93,7 +129,7 @@ if "High pass" in selected_events:
     ax = event.high_pass_render(
         pitch_height=pitch_height,
         pitch_width=pitch_width,
-        match=match_events,
+        match=filtered_match_events,
         game_time=game_time,
         color=colors["High pass"],
         ax=ax,
@@ -117,4 +153,4 @@ st.pyplot(fig)
 st.write("")
 st.write("")
 st.subheader("Raw data")
-st.write(match_events)
+st.write(filtered_match_events)
