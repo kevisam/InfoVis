@@ -55,7 +55,7 @@ def simple_pass_render(
             showarrow=True,
             arrowcolor=color,
             arrowwidth=3,
-            opacity=0.8,
+            opacity=0.6,
         )
 
         # Add interactive point at start of the arrow
@@ -129,7 +129,7 @@ def high_pass_render(
             showarrow=True,
             arrowcolor=color,
             arrowwidth=3,
-            opacity=0.8,
+            opacity=0.6,
         )
 
         # Add interactive point at start of the arrow
