@@ -147,9 +147,9 @@ st.write("")
 st.write("")
 st.subheader("Event visualizer")
 
-selected_match_name, selected_match_datetime = selected_match.replace(")", "").split(
-    "("
-)
+selected_match_split = selected_match.replace(")", "").split("(")
+selected_match_name = selected_match_split[0]
+selected_match_datetime =  selected_match_split[len(selected_match_split)-1]
 date, time = selected_match_datetime.split(" ")
 st.markdown(
     f"You are now visualizing the game of &nbsp; '{selected_match_name}' &nbsp; from the perspective of {selected_team}. This match took place on {date} and started at {time}."
