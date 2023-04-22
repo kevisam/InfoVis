@@ -2,10 +2,12 @@ import json
 from datetime import datetime
 
 
-def simple_pass_render(
-    pitch_length, pitch_width, match, game_time, color, fig, player_data, team_side
-):
-    """For a given match ID and game time, returns plot elements that visualize the simple passes in the form of arrows"""
+def simple_pass_render(pitch_length, pitch_width, match, game_time, 
+                       color, fig, player_data, team_side):
+    """
+    For a given match ID and game time, returns plot elements that 
+    visualize the simple passes in the form of arrows.
+    """
 
     # get match data
     data = match[match["subEventName"] == "Simple pass"]
@@ -30,14 +32,18 @@ def simple_pass_render(
 
         # get player data
         player_id = event["playerId"]
-        name = player_data[player_id]["shortName"].encode().decode("unicode-escape")
-        role = json.loads(player_data[player_id]["role"].replace("'", '"'))["name"]
+        name = player_data[player_id][
+            "shortName"
+            ].encode().decode("unicode-escape")
+        role = json.loads(player_data[player_id][
+            "role"
+            ].replace("'", '"'))["name"]
         foot = player_data[player_id]["foot"]
         height = player_data[player_id]["height"]
         weight = player_data[player_id]["weight"]
-        country = json.loads(player_data[player_id]["passportArea"].replace("'", '"'))[
-            "name"
-        ]
+        country = json.loads(player_data[player_id][
+            "passportArea"
+            ].replace("'", '"'))["name"]
         birthdate = player_data[player_id]["birthDate"]
         birthdate = datetime.strptime(birthdate, "%Y-%m-%d")
         age = int((datetime.now() - birthdate).days / 365)
@@ -76,10 +82,12 @@ def simple_pass_render(
     return fig, data
 
 
-def high_pass_render(
-    pitch_length, pitch_width, match, game_time, color, fig, player_data, team_side
-):
-    """For a given match ID and game time, returns plot elements that visualize the simple passes in the form of arrows"""
+def high_pass_render(pitch_length, pitch_width, match, game_time, 
+                     color, fig, player_data, team_side):
+    """
+    For a given match ID and game time, returns plot elements 
+    that visualize the simple passes in the form of arrows.
+    """
 
     # get match data
     data = match[match["subEventName"] == "High pass"]
@@ -104,14 +112,18 @@ def high_pass_render(
 
         # get player data
         player_id = event["playerId"]
-        name = player_data[player_id]["shortName"].encode().decode("unicode-escape")
-        role = json.loads(player_data[player_id]["role"].replace("'", '"'))["name"]
+        name = player_data[player_id][
+            "shortName"
+            ].encode().decode("unicode-escape")
+        role = json.loads(player_data[player_id][
+            "role"
+            ].replace("'", '"'))["name"]
         foot = player_data[player_id]["foot"]
         height = player_data[player_id]["height"]
         weight = player_data[player_id]["weight"]
-        country = json.loads(player_data[player_id]["passportArea"].replace("'", '"'))[
-            "name"
-        ]
+        country = json.loads(player_data[player_id][
+            "passportArea"
+            ].replace("'", '"'))["name"]
         birthdate = player_data[player_id]["birthDate"]
         birthdate = datetime.strptime(birthdate, "%Y-%m-%d")
         age = int((datetime.now() - birthdate).days / 365)

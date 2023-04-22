@@ -17,8 +17,8 @@ from plotly_football_pitch import (
 ###############################
 
 # Pitch dimensions
-pitch_length = 104.75
-pitch_width = 67.75
+pitch_length = 104
+pitch_width = 67
 dimensions = PitchDimensions()
 
 # Define football pitch
@@ -29,7 +29,7 @@ fig = make_pitch_figure(
 fig.update_layout(width=700, height=600)
 
 
-# Define available colors (available = 1 ; not available = 0)
+# Define colors for each event type
 colors = {
     "Simple pass": "blue",
     "High pass": "red",
@@ -43,19 +43,18 @@ colors = {
 # Sidebar title
 st.sidebar.title("Match settings")
 
-# Drop-down menu to select the match
+# Drop-down menu to select the match #
+# ================================== #
 all_matches = helper.load_all_matches()
 all_match_names = all_matches["match_name"].unique().tolist()
 selected_match = st.sidebar.selectbox("Select a match:", all_match_names)
+# ================================== #
 
-# Drop-down menu to select the team
-match_teamsData = json.loads(
-    (
-        all_matches.loc[all_matches["match_name"] == selected_match, "teamsData"].iloc[
-            0
-        ]
-    ).replace("'", '"')
-)
+# Drop-down menu to select the team #
+# ================================= #
+match_teamsData = json.loads((all_matches.loc[
+    all_matches["match_name"] == selected_match, "teamsData"
+    ].iloc[0]).replace("'", '"'))
 match_teamIds = list(match_teamsData.keys())
 all_teams = helper.load_all_teams()
 selected_match_team_names = (
@@ -71,12 +70,14 @@ if selected_match.startswith(selected_team):
     team_side = "left"
 else:
     team_side = "right"
+# ================================= #
 
 # Filter title
 st.sidebar.title(" ")
 st.sidebar.title("Filter settings")
 
-# Drop-down menu to select the player
+# Drop-down menu to select the player #
+# =================================== #
 matchId = all_matches.loc[all_matches["match_name"] == selected_match, "wyId"].iloc[0]
 all_players = helper.load_all_players()
 all_match_events = helper.get_match_events(
@@ -116,8 +117,10 @@ else:
         wyId = row["wyId"]
         selected_players_dict[wyId] = row.to_dict()
     selected_player_Ids = "all"
+# =================================== #
 
-# Drop-down menu to select the event type
+# Drop-down menu to select the event type #
+# ======================================= #
 filtered_match_events = helper.get_match_events(
     matchId=matchId,
     all_events_data=helper.load_all_events(),
@@ -125,7 +128,9 @@ filtered_match_events = helper.get_match_events(
     players=selected_player_Ids,
 )
 event_names = filtered_match_events["subEventName"].unique().tolist()
-selected_events = st.sidebar.multiselect("Select an event type:", event_names)
+event_names = [element for element in event_names if isinstance(element, str)]
+selected_events = st.sidebar.multiselect("Select an event type:", sorted(event_names))
+# ======================================= #
 
 
 #######################
@@ -138,8 +143,9 @@ st.title("Football Game Statistics Visualized")
 # Render introduction
 st.markdown(
     """
-    This app allows for the visualization of different actions and events that occurred during the 2018 World Cup matches. \
-        The visualizations can be controlled using a time slider.
+    This app allows for the visualization of different actions and events \
+        that occurred during the 2018 World Cup matches. The visualizations \
+            can be controlled using a time slider.
     """
 )
 
@@ -153,14 +159,18 @@ selected_match_name = selected_match_split[0]
 selected_match_datetime =  selected_match_split[len(selected_match_split)-1]
 date, time = selected_match_datetime.split(" ")
 st.markdown(
-    f"You are now visualizing the game of &nbsp; '{selected_match_name}' &nbsp; from the perspective of {selected_team}. This match took place on {date} and started at {time}."
+    f"You are now visualizing the game of &nbsp; '{selected_match_name}' &nbsp; \
+        from the perspective of {selected_team}. This match took place \
+            on {date} and started at {time}."
 )
 
 # Render slider
-default_period = (0, 3)
-slider_label = "The visualization below shows the locations of events for a chosen event type, performed during a particular match, chosen team(s). \
-    Events can be filtered by team or even by player. The time window (in minutes) can be adjusted in the sidebar. \
-        The starting time (in minutes) can be set using the slider below."
+default_period = (0, 5)
+slider_label = "The visualization below shows the locations of events \
+    for a chosen event type, performed during a particular match, chosen team(s). \
+    Events can be filtered by team or even by player. The time window (in minutes) \
+        can be adjusted in the sidebar. The starting time (in minutes) can be set \
+            using the slider below."
 game_time = st.slider("Select a time period: ", 0, 120, default_period, step=1)
 
 
@@ -208,7 +218,7 @@ raw_df = raw_df.reset_index(drop=True)
 # Render pitch
 fig.update_layout(
     title={
-        "text": selected_match.split("(")[0],
+        "text": selected_match_name,
         "font": {"size": 20},
         "xanchor": "center",
         "x": 0.5,  # set x to 0.5 for center alignment
