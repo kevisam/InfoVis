@@ -124,18 +124,27 @@ def high_pass_render(
             y=end_point[1],
             ax=start_point[0],
             ay=start_point[1],
-            text="   ",
+            text="",
             arrowhead=1,
             showarrow=True,
             arrowcolor=color,
             arrowwidth=3,
             opacity=0.8,
-            hovertext=f"Name: &nbsp; {name}<br>"
+        )
+
+        # Add interactive point at start of the arrow
+        fig.add_scatter(
+            x=[start_point[0]],
+            y=[start_point[1]],
+            mode="markers",
+            marker={"size": 7, "color": color},
+            hovertemplate=f"Name: &nbsp; {name}<br>"
             + f"Role: &nbsp; {role}<br>"
             + f"Age: &nbsp; {age}<br>"
             + f"Height: &nbsp; {height}cm<br>"
             + f"Weight: &nbsp; {weight}kg<br>"
             + f"Foot: &nbsp; {foot}<br>"
-            + f"Country: &nbsp; {country}<br>",
+            + f"Country: &nbsp; {country}<br>"
+            + "<extra></extra>",  # Remove the trace number
         )
     return fig
