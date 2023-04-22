@@ -1,5 +1,6 @@
-import streamlit as st
 import json
+import pandas as pd
+import streamlit as st
 import utils.event_functions as event
 import utils.helper_functions as helper
 import plotly.express as px
@@ -167,9 +168,12 @@ game_time = st.slider("Select a time period: ", 0, 120, default_period, step=1)
 # === Define pitch objects === #
 ################################
 
+# Define empty df for raw display of data
+raw_df = filtered_match_events.drop(labels=filtered_match_events.index, axis=0)
+
 # Define arrows on pitch
 if "Simple pass" in selected_events:
-    fig = event.simple_pass_render(
+    fig, simple_pass_df = event.simple_pass_render(
         pitch_length=pitch_length,
         pitch_width=pitch_width,
         match=filtered_match_events,
@@ -179,9 +183,10 @@ if "Simple pass" in selected_events:
         player_data=selected_players_dict,
         team_side=team_side,
     )
+    raw_df = pd.concat([raw_df, simple_pass_df], axis=0)
 
 if "High pass" in selected_events:
-    fig = event.high_pass_render(
+    fig, high_pass_df = event.high_pass_render(
         pitch_length=pitch_length,
         pitch_width=pitch_width,
         match=filtered_match_events,
@@ -191,7 +196,10 @@ if "High pass" in selected_events:
         player_data=selected_players_dict,
         team_side=team_side,
     )
+    raw_df = pd.concat([raw_df, high_pass_df], axis=0)
 
+# Reset indexing on df for raw data display
+raw_df = raw_df.reset_index(drop=True)
 
 #######################
 # === Render pitch === #
@@ -210,12 +218,19 @@ fig.update_layout(
 fig.update_traces(showlegend=False)
 st.plotly_chart(fig)
 
+
 #######################
-# === For testing === #
+# === Raw data display === #
 #######################
 
-# Render raw data
-st.write("")
-st.write("")
-st.subheader("Raw data")
-st.write(filtered_match_events)
+# Raw data checkbox
+st.sidebar.title(" ")
+st.sidebar.title("Raw data settings")
+
+# Render raw data when checkbox is ticked
+show_raw_data = st.sidebar.checkbox("Show raw data")
+if show_raw_data:
+    st.write("")
+    st.write("")
+    st.subheader("Raw data")
+    st.write(raw_df)

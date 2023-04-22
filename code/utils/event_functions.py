@@ -73,7 +73,7 @@ def simple_pass_render(
             + f"Country: &nbsp; {country}<br>"
             + "<extra></extra>",  # Remove the trace number
         )
-    return fig
+    return fig, data
 
 
 def high_pass_render(
@@ -147,4 +147,4 @@ def high_pass_render(
             + f"Country: &nbsp; {country}<br>"
             + "<extra></extra>",  # Remove the trace number
         )
-    return fig
+    return fig, data
