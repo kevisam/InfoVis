@@ -50,43 +50,12 @@ def simple_pass_render(
             y=end_point[1],
             ax=start_point[0],
             ay=start_point[1],
-            text="●",
-            arrowhead=1,
-            showarrow=True,
-            arrowcolor=color,
-            arrowwidth=3,
-            opacity=0.8,
-            hovertext=f"Name: &nbsp; {name}<br>"
-            + f"Role: &nbsp; {role}<br>"
-            + f"Age: &nbsp; {age}<br>"
-            + f"Height: &nbsp; {height}cm<br>"
-            + f"Weight: &nbsp; {weight}kg<br>"
-            + f"Foot: &nbsp; {foot}<br>"
-            + f"Country: &nbsp; {country}<br>",
-            font=dict(size=16, color=color),
-        )
-
-        fig.add_annotation(
-            axref="x",
-            ayref="y",
-            x=end_point[0],
-            y=end_point[1],
-            ax=start_point[0],
-            ay=start_point[1],
             text="",
             arrowhead=1,
             showarrow=True,
             arrowcolor=color,
             arrowwidth=3,
             opacity=0.8,
-            hovertext=f"Name: &nbsp; {name}<br>"
-            + f"Role: &nbsp; {role}<br>"
-            + f"Age: &nbsp; {age}<br>"
-            + f"Height: &nbsp; {height}cm<br>"
-            + f"Weight: &nbsp; {weight}kg<br>"
-            + f"Foot: &nbsp; {foot}<br>"
-            + f"Country: &nbsp; {country}<br>",
-            font=dict(size=16, color=color),
         )
 
         fig.add_scatter(
@@ -94,6 +63,13 @@ def simple_pass_render(
             y=[start_point[1]],
             mode="markers",
             marker={"size": 7, "color": color},
+            hovertemplate=f"Name: &nbsp; {name}<br>"
+            + f"Role: &nbsp; {role}<br>"
+            + f"Age: &nbsp; {age}<br>"
+            + f"Height: &nbsp; {height}cm<br>"
+            + f"Weight: &nbsp; {weight}kg<br>"
+            + f"Foot: &nbsp; {foot}<br>"
+            + f"Country: &nbsp; {country}<br>",
         )
     return fig
 
