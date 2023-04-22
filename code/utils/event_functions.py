@@ -58,6 +58,7 @@ def simple_pass_render(
             opacity=0.8,
         )
 
+        # Add interactive point at start of the arrow
         fig.add_scatter(
             x=[start_point[0]],
             y=[start_point[1]],
@@ -69,7 +70,8 @@ def simple_pass_render(
             + f"Height: &nbsp; {height}cm<br>"
             + f"Weight: &nbsp; {weight}kg<br>"
             + f"Foot: &nbsp; {foot}<br>"
-            + f"Country: &nbsp; {country}<br>",
+            + f"Country: &nbsp; {country}<br>"
+            + "<extra></extra>",  # Remove the trace number
         )
     return fig
 
