@@ -5,6 +5,7 @@ import utils.event_functions as event
 import utils.helper_functions as helper
 import plotly.express as px
 import plotly.graph_objects as go
+from streamlit_plotly_events import plotly_events
 from plotly_football_pitch import (
     make_pitch_figure,
     PitchDimensions,
@@ -21,12 +22,16 @@ pitch_length = 104
 pitch_width = 67
 dimensions = PitchDimensions()
 
+# Canvas dimensions
+canvas_width = 700
+canvas_height = 600
+
 # Define football pitch
 fig = make_pitch_figure(
     dimensions,
     pitch_background=SingleColourBackground("#81B622"),
 )
-fig.update_layout(width=700, height=600)
+fig.update_layout(width=canvas_width, height=canvas_height)
 
 
 # Define colors for each event type
@@ -52,9 +57,13 @@ selected_match = st.sidebar.selectbox("Select a match:", all_match_names)
 
 # Drop-down menu to select the team #
 # ================================= #
-match_teamsData = json.loads((all_matches.loc[
-    all_matches["match_name"] == selected_match, "teamsData"
-    ].iloc[0]).replace("'", '"'))
+match_teamsData = json.loads(
+    (
+        all_matches.loc[all_matches["match_name"] == selected_match, "teamsData"].iloc[
+            0
+        ]
+    ).replace("'", '"')
+)
 match_teamIds = list(match_teamsData.keys())
 all_teams = helper.load_all_teams()
 selected_match_team_names = (
@@ -156,7 +165,7 @@ st.subheader("Event visualizer")
 
 selected_match_split = selected_match.replace(")", "").split("(")
 selected_match_name = selected_match_split[0]
-selected_match_datetime =  selected_match_split[len(selected_match_split)-1]
+selected_match_datetime = selected_match_split[len(selected_match_split) - 1]
 date, time = selected_match_datetime.split(" ")
 st.markdown(
     f"You are now visualizing the game of &nbsp; '{selected_match_name}' &nbsp; \
@@ -215,6 +224,7 @@ raw_df = raw_df.reset_index(drop=True)
 # === Render pitch === #
 #######################
 
+
 # Render pitch
 fig.update_layout(
     title={
@@ -226,7 +236,19 @@ fig.update_layout(
     }
 )
 fig.update_traces(showlegend=False)
-st.plotly_chart(fig)
+
+
+# st.plotly_chart(fig)  #/==> plotly_events creates a plot for some reason, so we do not need to use this
+
+selected_points = plotly_events(
+    fig,
+    click_event=True,
+    hover_event=False,
+    override_height=canvas_height,  # Height of the canvas created
+    override_width=canvas_width,  # Width of the canvas created
+)
+
+st.write("Selected points:", selected_points)
 
 
 #######################
