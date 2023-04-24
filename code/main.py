@@ -255,16 +255,9 @@ selected_points = plotly_events(
 # Show the events related to each selected point
 # Here we can add on click or on selection events for the points.
 for point in selected_points:
-    origpoint = helper.find_original_point(
-        point["x"],
-        point["y"],
-        team_side,
-        pitch_length,
-        pitch_width,
-        raw_df,
+    helper.show_player_info(
+        point, matchId, team_side, pitch_length, pitch_width, raw_df
     )
-    st.write("Point:", point)
-    st.write("orig point", origpoint)
     # TODO Add some stats about the players ?
 
 

@@ -1,5 +1,5 @@
 import pandas as pd
-
+import streamlit as st
 
 ################
 # === Paths ===#
@@ -86,3 +86,74 @@ def find_original_point(x, y, team_side, pitch_length, pitch_width, events_data)
         & (events_data["pos_orig_y"] == original_y)
     ]
     return filtered_data
+
+
+def get_specific_match_data(matchId):
+    data = load_all_matches()
+
+    data = data[data["wyId"] == matchId]
+
+    return data
+
+
+def find_player(playerId):
+    players_data = load_all_players()
+
+    filtered_data = players_data[players_data["wyId"] == int(playerId)]
+    return filtered_data
+
+
+# Player plotting
+
+
+def show_player_info(
+    point, matchId, team_side, pitch_length, pitch_width, current_events
+):
+    origpoint = find_original_point(
+        point["x"],
+        point["y"],
+        team_side,
+        pitch_length,
+        pitch_width,
+        current_events,
+    )
+    playerId = origpoint["playerId"]
+    player = find_player(playerId)
+    match_team_id = str(int(origpoint["teamId"]))
+
+    current_team_id = str(player["currentTeamId"])
+    matchData = get_specific_match_data(matchId)
+    matchData = matchData["teamsData"][0]
+    matchData = eval(matchData.replace("'", '"'))
+
+    st.write("matchdata", matchData)
+    st.write("match_team_id", str(match_team_id))
+
+    bench = matchData[match_team_id]["formation"]["bench"]
+    lineup = matchData[match_team_id]["formation"]["lineup"]
+    substitutions = matchData[match_team_id]["formation"]["substitutions"]
+
+    for plyr in bench:
+        if (plyr["playerId"] == playerId).any():
+            st.markdown("Player was initially on the bench")
+
+            for sub in substitutions:
+                playerOut = find_player(sub["playerOut"])
+                if (sub["playerIn"] == playerId).any():
+                    st.markdown(
+                        "Player came in at "
+                        + str(sub["minute"])
+                        + " minutes and replaced "
+                        + str(playerOut["shortName"]).encode().decode("unicode_escape")
+                    )
+
+    for plyr in lineup:
+        if (plyr["playerId"] == playerId).any():
+            st.markdown("Player was in the lineup")
+
+    # TODO: Add more info about the player
+
+    # st.write("playerId", playerId)
+    # st.write("Point:", point)
+    # st.write("orig point", origpoint)
+    # st.write("player", player)
