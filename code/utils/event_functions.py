@@ -2,10 +2,11 @@ import json
 from datetime import datetime
 
 
-def simple_pass_render(pitch_length, pitch_width, match, game_time, 
-                       color, fig, player_data, team_side):
+def simple_pass_render(
+    pitch_length, pitch_width, match, game_time, color, fig, player_data, team_side
+):
     """
-    For a given match ID and game time, returns plot elements that 
+    For a given match ID and game time, returns plot elements that
     visualize the simple passes in the form of arrows.
     """
 
@@ -18,8 +19,8 @@ def simple_pass_render(pitch_length, pitch_width, match, game_time,
     for idx, event in data.iterrows():
         # get position coordinates
         start_point = [
-            event["pos_orig_x"] / 100 * pitch_length + 0.5,
-            event["pos_orig_y"] / 100 * pitch_width + 0.5,
+            event["pos_orig_x"] / 100 * pitch_length,
+            event["pos_orig_y"] / 100 * pitch_width,
         ]
         end_point = [
             event["pos_dest_x"] / 100 * pitch_length,
@@ -32,21 +33,20 @@ def simple_pass_render(pitch_length, pitch_width, match, game_time,
 
         # get player data
         player_id = event["playerId"]
-        name = player_data[player_id][
-            "shortName"
-            ].encode().decode("unicode-escape")
-        role = json.loads(player_data[player_id][
-            "role"
-            ].replace("'", '"'))["name"]
+        name = player_data[player_id]["shortName"].encode().decode("unicode-escape")
+        role = json.loads(player_data[player_id]["role"].replace("'", '"'))["name"]
         foot = player_data[player_id]["foot"]
         height = player_data[player_id]["height"]
         weight = player_data[player_id]["weight"]
-        country = json.loads(player_data[player_id][
-            "passportArea"
-            ].replace("'", '"'))["name"]
+        country = json.loads(player_data[player_id]["passportArea"].replace("'", '"'))[
+            "name"
+        ]
         birthdate = player_data[player_id]["birthDate"]
         birthdate = datetime.strptime(birthdate, "%Y-%m-%d")
         age = int((datetime.now() - birthdate).days / 365)
+
+        xpos = event["pos_orig_x"]
+        ypos = event["pos_orig_y"]
 
         # create arrow
         fig.add_annotation(
@@ -77,15 +77,18 @@ def simple_pass_render(pitch_length, pitch_width, match, game_time,
             + f"Weight: &nbsp; {weight}kg<br>"
             + f"Foot: &nbsp; {foot}<br>"
             + f"Country: &nbsp; {country}<br>"
+            + f"xpos; {xpos}<br>"
+            + f"ypos; {ypos}<br>"
             + "<extra></extra>",  # Remove the trace number
         )
     return fig, data
 
 
-def high_pass_render(pitch_length, pitch_width, match, game_time, 
-                     color, fig, player_data, team_side):
+def high_pass_render(
+    pitch_length, pitch_width, match, game_time, color, fig, player_data, team_side
+):
     """
-    For a given match ID and game time, returns plot elements 
+    For a given match ID and game time, returns plot elements
     that visualize the simple passes in the form of arrows.
     """
 
@@ -98,8 +101,8 @@ def high_pass_render(pitch_length, pitch_width, match, game_time,
     for idx, event in data.iterrows():
         # get position coordinates
         start_point = [
-            event["pos_orig_x"] / 100 * pitch_length + 0.5,
-            event["pos_orig_y"] / 100 * pitch_width + 0.5,
+            event["pos_orig_x"] / 100 * pitch_length,
+            event["pos_orig_y"] / 100 * pitch_width,
         ]
         end_point = [
             event["pos_dest_x"] / 100 * pitch_length,
@@ -112,18 +115,14 @@ def high_pass_render(pitch_length, pitch_width, match, game_time,
 
         # get player data
         player_id = event["playerId"]
-        name = player_data[player_id][
-            "shortName"
-            ].encode().decode("unicode-escape")
-        role = json.loads(player_data[player_id][
-            "role"
-            ].replace("'", '"'))["name"]
+        name = player_data[player_id]["shortName"].encode().decode("unicode-escape")
+        role = json.loads(player_data[player_id]["role"].replace("'", '"'))["name"]
         foot = player_data[player_id]["foot"]
         height = player_data[player_id]["height"]
         weight = player_data[player_id]["weight"]
-        country = json.loads(player_data[player_id][
-            "passportArea"
-            ].replace("'", '"'))["name"]
+        country = json.loads(player_data[player_id]["passportArea"].replace("'", '"'))[
+            "name"
+        ]
         birthdate = player_data[player_id]["birthDate"]
         birthdate = datetime.strptime(birthdate, "%Y-%m-%d")
         age = int((datetime.now() - birthdate).days / 365)

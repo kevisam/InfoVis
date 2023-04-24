@@ -70,3 +70,19 @@ def get_team_side(matchId, teamId, events_data):
         return "right"
     else:
         return "left"
+
+
+def find_original_point(x, y, team_side, pitch_length, pitch_width, events_data):
+    """For a given point on the field, return the original position in the dataset"""
+
+    if team_side == "right":
+        x = pitch_length - x
+
+    original_x = round(x / pitch_length * 100)
+    original_y = round(y / pitch_width * 100)
+
+    filtered_data = events_data[
+        (events_data["pos_orig_x"] == original_x)
+        & (events_data["pos_orig_y"] == original_y)
+    ]
+    return filtered_data

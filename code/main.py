@@ -17,6 +17,10 @@ from plotly_football_pitch import (
 # === Define page objects === #
 ###############################
 
+# Global variables
+
+selected_points_array = []
+
 # Pitch dimensions
 pitch_length = 104
 pitch_width = 67
@@ -32,7 +36,7 @@ fig = make_pitch_figure(
     pitch_background=SingleColourBackground("#81B622"),
 )
 fig.update_layout(width=canvas_width, height=canvas_height)
-
+fig.update_layout(hovermode="closest")
 
 # Define colors for each event type
 colors = {
@@ -235,20 +239,33 @@ fig.update_layout(
         "y": 0.92,  # adjust y position for desired vertical alignment
     }
 )
-fig.update_traces(showlegend=False)
+fig.update_traces(
+    showlegend=False
+)  # Remove the legend on the traces. This removes the traces names
 
-
-# st.plotly_chart(fig)  #/==> plotly_events creates a plot for some reason, so we do not need to use this
-
+# Create a plot where we can retrieve on click events, and select events (Lasso or Rectangle selection)
 selected_points = plotly_events(
     fig,
+    select_event=True,
     click_event=True,
-    hover_event=False,
     override_height=canvas_height,  # Height of the canvas created
     override_width=canvas_width,  # Width of the canvas created
 )
 
-st.write("Selected points:", selected_points)
+# Show the events related to each selected point
+# Here we can add on click or on selection events for the points.
+for point in selected_points:
+    origpoint = helper.find_original_point(
+        point["x"],
+        point["y"],
+        team_side,
+        pitch_length,
+        pitch_width,
+        raw_df,
+    )
+    st.write("Point:", point)
+    st.write("orig point", origpoint)
+    # TODO Add some stats about the players ?
 
 
 #######################
