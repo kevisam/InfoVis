@@ -126,8 +126,8 @@ def show_player_info(
     matchData = matchData["teamsData"][0]
     matchData = eval(matchData.replace("'", '"'))
 
-    st.write("matchdata", matchData)
-    st.write("match_team_id", str(match_team_id))
+    # st.write("matchdata", matchData)
+    # st.write("match_team_id", str(match_team_id))
 
     bench = matchData[match_team_id]["formation"]["bench"]
     lineup = matchData[match_team_id]["formation"]["lineup"]
