@@ -1,5 +1,7 @@
 import pandas as pd
 import streamlit as st
+from streamlit_card import card
+
 
 ################
 # === Paths ===#
@@ -133,25 +135,32 @@ def show_player_info(
     lineup = matchData[match_team_id]["formation"]["lineup"]
     substitutions = matchData[match_team_id]["formation"]["substitutions"]
 
+    cardText = ""
     for plyr in bench:
         if (plyr["playerId"] == playerId).any():
-            st.markdown("Player was initially on the bench")
+            cardText += "Player was initially on the bench. "
 
             for sub in substitutions:
                 playerOut = find_player(sub["playerOut"])
                 if (sub["playerIn"] == playerId).any():
-                    st.markdown(
+                    cardText += (
                         "Player came in at "
                         + str(sub["minute"])
                         + " minutes and replaced "
-                        + str(playerOut["shortName"]).encode().decode("unicode_escape")
+                        + str(playerOut["shortName"].iloc[0])
+                        .encode()
+                        .decode("unicode_escape")
+                        + ". "
                     )
 
     for plyr in lineup:
         if (plyr["playerId"] == playerId).any():
-            st.markdown("Player was in the lineup")
+            cardText = "Player was in the lineup. "
 
-    # TODO: Add more info about the player
+    card(
+        title=str(player["shortName"].iloc[0].encode().decode("unicode_escape")),
+        text=cardText,
+    )
 
     # st.write("playerId", playerId)
     # st.write("Point:", point)
