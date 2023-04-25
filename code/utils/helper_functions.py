@@ -134,35 +134,42 @@ def show_player_info(
     bench = matchData[match_team_id]["formation"]["bench"]
     lineup = matchData[match_team_id]["formation"]["lineup"]
     substitutions = matchData[match_team_id]["formation"]["substitutions"]
-
+    playerInfo = []
+    entranceTime = ""
     cardText = ""
     for plyr in bench:
         if (plyr["playerId"] == playerId).any():
             cardText += "Player was initially on the bench. "
-
+            playerInfo = plyr
             for sub in substitutions:
                 playerOut = find_player(sub["playerOut"])
                 if (sub["playerIn"] == playerId).any():
-                    cardText += (
-                        "Player came in at "
+                    entranceTime = (
+                        "Replaced "
+                        + str(
+                            playerOut["shortName"]
+                            .iloc[0]
+                            .encode()
+                            .decode("unicode_escape")
+                        )
+                        + " at "
                         + str(sub["minute"])
-                        + " minutes and replaced "
-                        + str(playerOut["shortName"].iloc[0])
-                        .encode()
-                        .decode("unicode_escape")
-                        + ". "
+                        + "min. "
                     )
 
     for plyr in lineup:
         if (plyr["playerId"] == playerId).any():
-            cardText = "Player was in the lineup. "
+            playerInfo = plyr
+            # cardText = "Player was in the lineup. "
+            entranceTime = "Player was in the lineup."
+            # st.info("Player was in the lineup.")
 
-    card(
-        title=str(player["shortName"].iloc[0].encode().decode("unicode_escape")),
-        text=cardText,
-    )
+    st.title(f"{player['shortName'].iloc[0].encode().decode('unicode_escape')}")
 
-    # st.write("playerId", playerId)
-    # st.write("Point:", point)
-    # st.write("orig point", origpoint)
-    # st.write("player", player)
+    col1, col2, col3 = st.columns(3)
+
+    col1.info(f"Goals: {playerInfo['goals']} ", icon="🥇")
+    col1.info(f"Assists: {playerInfo['assists']} ", icon="🥈")
+    col2.info(f"Red cards: {playerInfo['redCards']} ", icon="🟥")
+    col2.info(f"Yellow cards: {playerInfo['yellowCards']} ", icon="🟨")
+    col3.info(entranceTime, icon="ℹ️")
