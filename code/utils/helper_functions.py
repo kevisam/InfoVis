@@ -1,7 +1,6 @@
 import pandas as pd
 import streamlit as st
-from streamlit_card import card
-
+import plotly.figure_factory as ff
 
 ################
 # === Paths ===#
@@ -11,7 +10,7 @@ events_path = "./code/dataset/data_clean/clean_events_data.csv"
 matches_path = "./code/dataset/data_clean/clean_matches_data.csv"
 teams_path = "./code/dataset/data_clean/clean_teams_data.csv"
 players_path = "./code/dataset/data_clean/clean_players_data.csv"
-
+rank_path = "./code/dataset/data_clean/playerank.csv"
 
 ####################
 # === Functions ===#
@@ -105,9 +104,22 @@ def find_player(playerId):
     return filtered_data
 
 
+def get_playerrank_data():
+    data = pd.read_csv(rank_path)
+
+    return data
+
+
+def get_playerrank(playerId, matchId):
+    data = get_playerrank_data()
+
+    match_data = data[data["matchId"] == int(matchId)]
+    player_data = match_data[match_data["playerId"] == int(playerId)]
+
+    return player_data
+
+
 # Player plotting
-
-
 def show_player_info(
     point, matchId, team_side, pitch_length, pitch_width, current_events
 ):
@@ -127,14 +139,19 @@ def show_player_info(
     matchData = get_specific_match_data(matchId)
     matchData = matchData["teamsData"][0]
     matchData = eval(matchData.replace("'", '"'))
-
-    # st.write("matchdata", matchData)
-    # st.write("match_team_id", str(match_team_id))
+    playerRankData = get_playerrank_data()
+    matchRankData = playerRankData[playerRankData["matchId"] == matchId]
 
     bench = matchData[match_team_id]["formation"]["bench"]
     lineup = matchData[match_team_id]["formation"]["lineup"]
     substitutions = matchData[match_team_id]["formation"]["substitutions"]
     playerInfo = []
+    playerRank = get_playerrank(playerId, matchId)
+    playerScore = playerRank["playerankScore"]
+
+    st.write("playeRank", playerRank)
+    st.write("playerScore", playerScore)
+
     entranceTime = ""
     cardText = ""
     for plyr in bench:
@@ -168,8 +185,35 @@ def show_player_info(
 
     col1, col2, col3 = st.columns(3)
 
-    col1.info(f"Goals: {playerInfo['goals']} ", icon="🥇")
+    if playerInfo["goals"] != "null":
+        col1.info(f"Goals: {playerInfo['goals']} ", icon="🥇")
+    else:
+        col1.info(f"Goals: 0 ", icon="🥇")
     col1.info(f"Assists: {playerInfo['assists']} ", icon="🥈")
     col2.info(f"Red cards: {playerInfo['redCards']} ", icon="🟥")
     col2.info(f"Yellow cards: {playerInfo['yellowCards']} ", icon="🟨")
     col3.info(entranceTime, icon="ℹ️")
+
+    fig = ff.create_distplot(
+        [matchRankData["playerankScore"]], ["playerankScore"], 0.02
+    )
+
+    # Add a vertical line at the specified value
+    fig.update_layout(
+        shapes=[
+            dict(
+                type="line",
+                x0=int(playerScore),
+                x1=int(playerScore),
+                yref="paper",
+                y0=0,
+                y1=1,  # fraction of plot height
+                line=dict(color="red", width=2, dash="dash"),
+            )
+        ],
+        xaxis=dict(title="Player Rank Score Range"),
+        yaxis=dict(title="Number of Players"),
+        title="Distribution of Player Rank Scores",
+    )
+
+    st.plotly_chart(fig)
