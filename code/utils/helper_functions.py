@@ -149,8 +149,8 @@ def show_player_info(
     playerRank = get_playerrank(playerId, matchId)
     playerScore = playerRank["playerankScore"]
 
-    st.write("playeRank", playerRank)
-    st.write("playerScore", playerScore)
+    # st.write("playeRank", playerRank)
+    # st.write("playerScore", playerScore)
 
     entranceTime = ""
     cardText = ""
