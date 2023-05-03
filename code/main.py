@@ -40,8 +40,30 @@ fig.update_layout(hovermode="closest")
 
 # Define colors for each event type
 colors = {
-    "Simple pass": "blue",
-    "High pass": "red",
+    "Acceleration": "#FF6969",
+    "Air duel": "#FFA669",
+    "Clearance": "#FFE169",
+    "Corner": "#DDFF69",
+    "Cross": "#69FFD8",
+    "Foul": "#69CFFF",
+    "Free Kick": "#6996FF",
+    "Free kick cross": "#7269FF",
+    "Goal kick": "#AB69FF",
+    "Ground attacking duel": "#ED69FF",
+    "Ground defending duel": "#FF69A6",
+    "Ground loose ball duel": "#8E0000",
+    "Hand foul": "#BF4E00",
+    "Hand pass": "#AA8800",
+    "Head pass": "#0071A6",
+    "High pass": "#002D97",
+    "Launch": "#4F00B3",
+    "Reflexes": "#9000A4",
+    "Save attempt": "#75002F",
+    "Shot": "#FF6969",
+    "Simple pass": "#FFA669",
+    "Smart pass": "#FFE169",
+    "Throw in": "#69FFD8",
+    "Touch": "#69CFFF",
 }
 
 
@@ -195,26 +217,14 @@ game_time = st.slider("Select a time period: ", 0, 120, default_period, step=1)
 raw_df = filtered_match_events.drop(labels=filtered_match_events.index, axis=0)
 
 # Define arrows on pitch
-if "Simple pass" in selected_events:
-    fig, simple_pass_df = event.simple_pass_render(
+for event_name in selected_events:
+    fig, high_pass_df = event.event_render(
+        event_name=event_name,
         pitch_length=pitch_length,
         pitch_width=pitch_width,
         match=filtered_match_events,
         game_time=game_time,
-        color=colors["Simple pass"],
-        fig=fig,
-        player_data=selected_players_dict,
-        team_side=team_side,
-    )
-    raw_df = pd.concat([raw_df, simple_pass_df], axis=0)
-
-if "High pass" in selected_events:
-    fig, high_pass_df = event.high_pass_render(
-        pitch_length=pitch_length,
-        pitch_width=pitch_width,
-        match=filtered_match_events,
-        game_time=game_time,
-        color=colors["High pass"],
+        color=colors[event_name],
         fig=fig,
         player_data=selected_players_dict,
         team_side=team_side,
@@ -224,10 +234,10 @@ if "High pass" in selected_events:
 # Reset indexing on df for raw data display
 raw_df = raw_df.reset_index(drop=True)
 
+
 #######################
 # === Render pitch === #
 #######################
-
 
 # Render pitch
 fig.update_layout(
