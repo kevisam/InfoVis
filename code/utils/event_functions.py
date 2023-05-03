@@ -61,7 +61,7 @@ def event_render(
             showarrow=True,
             arrowcolor=color,
             arrowwidth=3,
-            opacity=0.7,
+            opacity=0.75,
         )
 
         # Add interactive point at start of the arrow
@@ -79,6 +79,6 @@ def event_render(
             + f"Country: &nbsp; {country}<br>"
             + f"xpos; {xpos}<br>"
             + f"ypos; {ypos}<br>"
-            + "<extra></extra>",  # Remove the trace number
+            + f"<extra>{event_name}</extra>",  # Remove the trace number
         )
     return fig, data

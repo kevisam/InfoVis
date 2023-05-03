@@ -28,42 +28,42 @@ dimensions = PitchDimensions()
 
 # Canvas dimensions
 canvas_width = 700
-canvas_height = 600
+canvas_height = 550
 
 # Define football pitch
 fig = make_pitch_figure(
     dimensions,
-    pitch_background=SingleColourBackground("#81B622"),
+    pitch_background=SingleColourBackground("#A1BFA3"),
 )
 fig.update_layout(width=canvas_width, height=canvas_height)
 fig.update_layout(hovermode="closest")
 
 # Define colors for each event type
 colors = {
-    "Acceleration": "#FF6969",
-    "Air duel": "#FFA669",
-    "Clearance": "#FFE169",
-    "Corner": "#DDFF69",
-    "Cross": "#69FFD8",
-    "Foul": "#69CFFF",
-    "Free Kick": "#6996FF",
-    "Free kick cross": "#7269FF",
-    "Goal kick": "#AB69FF",
-    "Ground attacking duel": "#ED69FF",
-    "Ground defending duel": "#FF69A6",
-    "Ground loose ball duel": "#8E0000",
-    "Hand foul": "#BF4E00",
-    "Hand pass": "#AA8800",
-    "Head pass": "#0071A6",
-    "High pass": "#002D97",
-    "Launch": "#4F00B3",
-    "Reflexes": "#9000A4",
-    "Save attempt": "#75002F",
-    "Shot": "#FF6969",
-    "Simple pass": "#FFA669",
-    "Smart pass": "#FFE169",
-    "Throw in": "#69FFD8",
-    "Touch": "#69CFFF",
+    "Acceleration": "#B00000",
+    "Air duel": "#FF6000",
+    "Clearance": "#AF7900",
+    "Corner": "#FFC200",
+    "Cross": "#FBFF00",
+    "Foul": "#C4DF00",
+    "Free Kick": "#B9FF00",
+    "Free kick cross": "#6DE100",
+    "Goal kick": "#1DCA0B",
+    "Ground attacking duel": "#2E9076",
+    "Ground defending duel": "#00FFFF",
+    "Ground loose ball duel": "#00CFFF",
+    "Hand foul": "#00AFFF",
+    "Hand pass": "#006FFF",
+    "Head pass": "#000FFF",
+    "High pass": "#4000FF",
+    "Launch": "#6400FF",
+    "Reflexes": "#8F00FF",
+    "Save attempt": "#B200FF",
+    "Shot": "#D500FF",
+    "Simple pass": "#FF00EC",
+    "Smart pass": "#FF00AA",
+    "Throw in": "#393939",
+    "Touch": "#767676",
 }
 
 
