@@ -28,20 +28,42 @@ dimensions = PitchDimensions()
 
 # Canvas dimensions
 canvas_width = 700
-canvas_height = 600
+canvas_height = 550
 
 # Define football pitch
 fig = make_pitch_figure(
     dimensions,
-    pitch_background=SingleColourBackground("#81B622"),
+    pitch_background=SingleColourBackground("#A1BFA3"),
 )
 fig.update_layout(width=canvas_width, height=canvas_height)
 fig.update_layout(hovermode="closest")
 
 # Define colors for each event type
 colors = {
-    "Simple pass": "blue",
-    "High pass": "red",
+    "Acceleration": "#B00000",
+    "Air duel": "#FF6000",
+    "Clearance": "#AF7900",
+    "Corner": "#FFC200",
+    "Cross": "#FBFF00",
+    "Foul": "#C4DF00",
+    "Free Kick": "#B9FF00",
+    "Free kick cross": "#6DE100",
+    "Goal kick": "#1DCA0B",
+    "Ground attacking duel": "#2E9076",
+    "Ground defending duel": "#00FFFF",
+    "Ground loose ball duel": "#00CFFF",
+    "Hand foul": "#00AFFF",
+    "Hand pass": "#006FFF",
+    "Head pass": "#000FFF",
+    "High pass": "#4000FF",
+    "Launch": "#6400FF",
+    "Reflexes": "#8F00FF",
+    "Save attempt": "#B200FF",
+    "Shot": "#D500FF",
+    "Simple pass": "#FF00EC",
+    "Smart pass": "#FF00AA",
+    "Throw in": "#393939",
+    "Touch": "#767676",
 }
 
 
@@ -195,26 +217,14 @@ game_time = st.slider("Select a time period: ", 0, 120, default_period, step=1)
 raw_df = filtered_match_events.drop(labels=filtered_match_events.index, axis=0)
 
 # Define arrows on pitch
-if "Simple pass" in selected_events:
-    fig, simple_pass_df = event.simple_pass_render(
+for event_name in selected_events:
+    fig, high_pass_df = event.event_render(
+        event_name=event_name,
         pitch_length=pitch_length,
         pitch_width=pitch_width,
         match=filtered_match_events,
         game_time=game_time,
-        color=colors["Simple pass"],
-        fig=fig,
-        player_data=selected_players_dict,
-        team_side=team_side,
-    )
-    raw_df = pd.concat([raw_df, simple_pass_df], axis=0)
-
-if "High pass" in selected_events:
-    fig, high_pass_df = event.high_pass_render(
-        pitch_length=pitch_length,
-        pitch_width=pitch_width,
-        match=filtered_match_events,
-        game_time=game_time,
-        color=colors["High pass"],
+        color=colors[event_name],
         fig=fig,
         player_data=selected_players_dict,
         team_side=team_side,
@@ -224,10 +234,10 @@ if "High pass" in selected_events:
 # Reset indexing on df for raw data display
 raw_df = raw_df.reset_index(drop=True)
 
+
 #######################
 # === Render pitch === #
 #######################
-
 
 # Render pitch
 fig.update_layout(
