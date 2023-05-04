@@ -147,7 +147,10 @@ def show_player_info(
     substitutions = matchData[match_team_id]["formation"]["substitutions"]
     playerInfo = []
     playerRank = get_playerrank(playerId, matchId)
-    playerScore = playerRank["playerankScore"].iloc[0]
+    playerScore = playerRank["playerankScore"]
+
+    # st.write("playeRank", playerRank)
+    # st.write("playerScore", playerScore)
 
     entranceTime = ""
     cardText = ""
@@ -174,7 +177,9 @@ def show_player_info(
     for plyr in lineup:
         if (plyr["playerId"] == playerId).any():
             playerInfo = plyr
+            # cardText = "Player was in the lineup. "
             entranceTime = "Player was in the lineup."
+            # st.info("Player was in the lineup.")
 
     st.title(f"{player['shortName'].iloc[0].encode().decode('unicode_escape')}")
 
@@ -188,10 +193,9 @@ def show_player_info(
     col2.info(f"Red cards: {playerInfo['redCards']} ", icon="🟥")
     col2.info(f"Yellow cards: {playerInfo['yellowCards']} ", icon="🟨")
     col3.info(entranceTime, icon="ℹ️")
-    col3.info(f"Minutes played: {int(playerRank['minutesPlayed'])}", icon="⏱️")
 
     fig = ff.create_distplot(
-        [matchRankData["playerankScore"]], ["Distribution of Player Rank Scores"], 0.025
+        [matchRankData["playerankScore"]], ["playerankScore"], 0.02
     )
 
     # Add a vertical line at the specified value
@@ -199,18 +203,17 @@ def show_player_info(
         shapes=[
             dict(
                 type="line",
-                x0=playerScore,
-                x1=playerScore,
+                x0=int(playerScore),
+                x1=int(playerScore),
                 yref="paper",
                 y0=0,
                 y1=1,  # fraction of plot height
                 line=dict(color="red", width=2, dash="dash"),
-                name="Player's Score",
             )
         ],
         xaxis=dict(title="Player Rank Score Range"),
         yaxis=dict(title="Number of Players"),
-        title=f"Rank score of {player['shortName'].iloc[0].encode().decode('unicode_escape')} compared to other players",
+        title="Distribution of Player Rank Scores",
     )
 
     st.plotly_chart(fig)
