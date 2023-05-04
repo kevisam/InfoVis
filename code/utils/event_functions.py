@@ -45,8 +45,8 @@ def event_render(
         birthdate = datetime.strptime(birthdate, "%Y-%m-%d")
         age = int((datetime.now() - birthdate).days / 365)
 
-        xpos = event["pos_orig_x"]
-        ypos = event["pos_orig_y"]
+        xpos = event["pos_orig_x"] / 100 * pitch_length
+        ypos = event["pos_orig_y"] / 100 * pitch_width
 
         # create arrow
         fig.add_annotation(
@@ -77,8 +77,9 @@ def event_render(
             + f"Weight: &nbsp; {weight}kg<br>"
             + f"Foot: &nbsp; {foot}<br>"
             + f"Country: &nbsp; {country}<br>"
-            + f"xpos; {xpos}<br>"
-            + f"ypos; {ypos}<br>"
-            + f"<extra>{event_name}</extra>",  # Remove the trace number
+            + f"Xpos: &nbsp; {xpos:.2f}m<br>"
+            + f"Ypos: &nbsp; {ypos:.2f}m<br>"
+            + f"Event: &nbsp; {event_name}<br>"
+            + f"<extra></extra>",  # Remove the trace number
         )
     return fig, data
