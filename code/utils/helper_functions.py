@@ -226,8 +226,16 @@ def show_player_info(
     return st.plotly_chart(fig)
 
 
-def create_player_color(default_color, player_name):
-    decimal_number = int(default_color, 16)
-    decimal_number += len(player_name)**2
-    hex_number = hex(decimal_number)[2:].zfill(len(default_color))
+def create_color(event, player):
+    decimal_number = str2int(event + player)
+    hex_number = hex(decimal_number)[2:8]
     return f"#{hex_number}"
+
+def str2int(string):
+    result = 0
+    for char in string:
+        # Convert each character to its ASCII value
+        ascii_value = ord(char)
+        # Add the ASCII value to the result
+        result += ascii_value
+    return result
