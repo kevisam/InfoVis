@@ -167,6 +167,43 @@ selected_events = st.sidebar.multiselect("Select an event type:", sorted(event_n
 # ======================================= #
 
 
+# Drop-down menu to select the event type #
+# ======================================= #
+if selected_events != []:
+    st.sidebar.write("")
+    st.sidebar.header("Colors")
+    # create unique pairs for all events and players selected
+    from itertools import product
+    pairs = list(product(selected_players, selected_events))
+
+    color_col_0, color_col_1, color_col_2 = st.sidebar.columns([0.33,0.33,0.33])
+
+    # suggest color for each pair
+    selected_colors = {}
+    for i,pair in enumerate(pairs):
+        pair_player = pair[0].encode().decode("unicode_escape")
+        pair_event = pair[1]
+        default_color = colors[pair_event]
+
+        if i%3 == 0:
+            with color_col_0:
+                col = st.color_picker(f"{pair_player}, {pair_event}", default_color, key=pair)
+                st.write("")
+                st.write("")
+        elif i%3 == 1:
+            with color_col_1:
+                col = st.color_picker(f"{pair_player}, {pair_event}", default_color, key=pair)
+                st.write("")
+                st.write("")
+        elif i%3 == 2:
+            with color_col_2:
+                col = st.color_picker(f"{pair_player}, {pair_event}", default_color, key=pair)
+                st.write("")
+                st.write("")
+        selected_colors[pair] = col
+# ======================================= #
+
+
 #######################
 # === Render page === #
 #######################
@@ -223,7 +260,7 @@ for event_name in selected_events:
         pitch_width=pitch_width,
         match=filtered_match_events,
         game_time=game_time,
-        color=colors[event_name],
+        selected_colors=selected_colors,
         fig=fig,
         player_data=selected_players_dict,
         team_side=team_side,
@@ -323,7 +360,7 @@ if play_button:
                 pitch_width=pitch_width,
                 match=filtered_match_events,
                 game_time=play_window,
-                color=colors[event_name],
+                selected_colors=selected_colors,
                 fig=fig,
                 player_data=selected_players_dict,
                 team_side=team_side,

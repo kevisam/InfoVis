@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 def event_render(
-    event_name, pitch_length, pitch_width, match, game_time, color, fig, player_data, team_side
+    event_name, pitch_length, pitch_width, match, game_time, selected_colors, fig, player_data, team_side
 ):
     """
     For a given match ID and game time, returns plot elements that
@@ -33,6 +33,7 @@ def event_render(
 
         # get player data
         player_id = event["playerId"]
+        shortName = player_data[player_id]["shortName"]
         name = player_data[player_id]["shortName"].encode().decode("unicode-escape")
         role = json.loads(player_data[player_id]["role"].replace("'", '"'))["name"]
         foot = player_data[player_id]["foot"]
@@ -47,6 +48,9 @@ def event_render(
 
         xpos = event["pos_orig_x"] / 100 * pitch_length
         ypos = event["pos_orig_y"] / 100 * pitch_width
+
+        # get color
+        color = selected_colors[(shortName, event_name)]
 
         # create arrow
         fig.add_annotation(
