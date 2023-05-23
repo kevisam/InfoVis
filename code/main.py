@@ -222,9 +222,9 @@ st.title("Football Game Statistics Visualized")
 # Render introduction
 st.markdown(
     """
-    This app allows for the visualization of different actions and events \
+    This app allows for the visualization of player statistics and the different events \
         that occurred during the 2018 World Cup matches. The visualizations \
-            can be controlled using a time slider.
+            can be controlled using the settings in the sidebar and the sliders in the main page.
     """
 )
 
@@ -323,7 +323,7 @@ import time
 st.write("")
 st.write("")
 st.subheader("Game simulator")
-st.markdown("Press the play button to simulate the whole game.")
+st.markdown("Use the sliders to specify your settings. Press the play button to simulate the whole game.")
 
 # Render play button and slider
 play_button_column, play_speed_slider_column, play_time_slider_column, simulation_time = st.columns([0.1,0.2,0.3,0.4])
