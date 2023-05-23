@@ -104,9 +104,19 @@ def find_player(playerId):
     return filtered_data
 
 
+def rank_rescaler(x, old_max, old_min):
+    y = 1/(old_max-old_min) * x - (1/(old_max-old_min))*old_min
+    return y
+
+
 def get_playerrank_data():
     data = pd.read_csv(rank_path)
 
+    # scale scores
+    old_max = data['playerankScore'].max()
+    old_min = data['playerankScore'].min()
+
+    data['playerankScore'] = rank_rescaler(data['playerankScore'], old_max, old_min)
     return data
 
 
@@ -208,7 +218,7 @@ def show_player_info(
                 name="Player's Score",
             )
         ],
-        xaxis=dict(title="Player Rank Score Range"),
+        xaxis=dict(title="Player Rank Score Range", tickformat=".0%"),
         yaxis=dict(title="Number of Players"),
         title=f"Rank score of {player['shortName'].iloc[0].encode().decode('unicode_escape')} compared to other players",
     )
