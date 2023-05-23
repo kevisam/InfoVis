@@ -344,14 +344,19 @@ with simulation_time:
     simulation_time = st.slider("Select a simulation time: ", 1, 120, step=1, value=10)
 
 if play_button:
+    st.write('<script>window.scrollTo(0,document.body.scrollHeight);</script>', unsafe_allow_html=True)
     # Set the time settings
     play_time = simulation_time - time_window
     play_window = [0, time_window]
 
     # Create an empty element to display the plot
+    stop_button = st.button("Stop simulation", key='stop_simulation')
     play_plot = st.empty()
 
-    for i in range(play_time):
+    for i in range(play_time+1):
+        # Break if stop has been clicked
+        if stop_button:
+            break
         # Redefine football pitch
         fig = make_pitch_figure(
             dimensions,
@@ -395,10 +400,11 @@ if play_button:
         play_window[0] += 1
         play_window[1] += 1
 
-        # Wait for 1 second
-        time.sleep(1/play_speed)
+        # Wait
+        time.sleep(2/play_speed)
 
     play_plot.empty()
+    st.experimental_rerun()
 
 
 
