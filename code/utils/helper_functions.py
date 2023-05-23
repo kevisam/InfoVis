@@ -147,7 +147,7 @@ def show_player_info(
 
     current_team_id = str(player["currentTeamId"])
     matchData = get_specific_match_data(matchId)
-    matchData = matchData["teamsData"][0]
+    matchData = matchData["teamsData"].iloc[0]
     matchData = eval(matchData.replace("'", '"'))
     playerRankData = get_playerrank_data()
     matchRankData = playerRankData[playerRankData["matchId"] == matchId]
@@ -220,7 +220,7 @@ def show_player_info(
         ],
         xaxis=dict(title="Player Rank Score Range", tickformat=".0%"),
         yaxis=dict(title="Number of Players"),
-        title=f"Rank score of {player['shortName'].iloc[0].encode().decode('unicode_escape')} compared to other players",
+        title=f"Rank score of {player['shortName'].iloc[0].encode().decode('unicode_escape')} compared to other players in the match",
     )
 
     return st.plotly_chart(fig)
