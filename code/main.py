@@ -171,7 +171,8 @@ selected_events = st.sidebar.multiselect("Select an event type:", sorted(event_n
 # ======================================== #
 if selected_events != []:
     st.sidebar.write("")
-    st.sidebar.header("Colors")
+    st.sidebar.write("")
+    st.sidebar.title("Colors")
     # create unique pairs for all events and players selected
     from itertools import product
     if 'selected_players' in st.session_state:
