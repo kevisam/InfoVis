@@ -50,7 +50,10 @@ def event_render(
         ypos = event["pos_orig_y"] / 100 * pitch_width
 
         # get color
-        color = selected_colors[(shortName, event_name)]
+        if (shortName, event_name) in selected_colors:
+            color = selected_colors[(shortName, event_name)]
+        else:
+            color = selected_colors[("All players", event_name)]
 
         # create arrow
         fig.add_annotation(

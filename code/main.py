@@ -131,7 +131,7 @@ for i in range(len(all_match_player_names)):
 filter_by_player = st.sidebar.checkbox("Filter by player")
 if filter_by_player:
     selected_players = st.sidebar.multiselect(
-        "Select a player:", all_match_player_names
+        "Select a player:", all_match_player_names, key='selected_players'
     )
     # re-encode selected player for search in dataset
     for i in range(len(selected_players)):
@@ -174,7 +174,10 @@ if selected_events != []:
     st.sidebar.header("Colors")
     # create unique pairs for all events and players selected
     from itertools import product
-    pairs = list(product(selected_players, selected_events))
+    if 'selected_players' in st.session_state:
+        pairs = list(product(selected_players, selected_events))
+    else:
+        pairs = list(product(["All players"], selected_events))
 
     color_col_0, color_col_1, color_col_2 = st.sidebar.columns([0.33,0.33,0.33])
 
