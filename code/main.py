@@ -123,24 +123,23 @@ all_match_events = helper.get_match_events(
 all_match_playerIds = all_match_events["playerId"].unique().tolist()
 all_match_player_data = all_players[all_players["wyId"].isin(all_match_playerIds)]
 all_match_player_names = all_match_player_data["shortName"].unique().tolist()
-## decode names to support unicode characters
+## decode names
+name_encoding_dict = {}
 for i in range(len(all_match_player_names)):
+    raw_name = all_match_player_names[i]
     decoded_string = all_match_player_names[i].encode().decode("unicode_escape")
     all_match_player_names[i] = decoded_string
+    name_encoding_dict[decoded_string] = raw_name
 ## create checkbox to filter by player
 filter_by_player = st.sidebar.checkbox("Filter by player")
 if filter_by_player:
     selected_players = st.sidebar.multiselect(
         "Select a player:", all_match_player_names, key='selected_players'
     )
-    # re-encode selected player for search in dataset
-    for i in range(len(selected_players)):
-        encoded_string = selected_players[i].encode("unicode-escape").decode()
-        selected_players[i] = encoded_string
     ## store filtered player data
     selected_players_dict = {}
     for player_name in selected_players:
-        player_data = all_players[all_players["shortName"] == player_name]
+        player_data = all_players[all_players["shortName"] == name_encoding_dict[player_name]]
         playerId = player_data["wyId"].iloc[0]
         selected_players_dict[playerId] = player_data.iloc[0].to_dict()
     selected_player_Ids = selected_players_dict.keys()
@@ -185,11 +184,11 @@ if selected_events != []:
     # suggest color for each pair
     selected_colors = {}
     for i,pair in enumerate(pairs):
-        pair_player = pair[0].encode().decode("unicode_escape")
+        pair_player = pair[0]
         pair_event = pair[1]
 
         # get default color
-        default_color = helper.create_player_color(colors[pair_event][1:], pair_player)
+        default_color = helper.create_color(pair_event, pair_player)
 
         if i%3 == 0:
             with color_col_0:
@@ -268,6 +267,7 @@ for event_name in selected_events:
         pitch_width=pitch_width,
         match=filtered_match_events,
         game_time=game_time,
+        name_encoding_dict=name_encoding_dict,
         selected_colors=selected_colors,
         fig=fig,
         player_data=selected_players_dict,
