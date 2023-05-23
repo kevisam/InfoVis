@@ -373,6 +373,7 @@ if play_button:
                 pitch_width=pitch_width,
                 match=filtered_match_events,
                 game_time=play_window,
+                name_encoding_dict=name_encoding_dict,
                 selected_colors=selected_colors,
                 fig=fig,
                 player_data=selected_players_dict,

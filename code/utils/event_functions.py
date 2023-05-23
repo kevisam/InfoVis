@@ -35,8 +35,6 @@ def event_render(
         player_id = event["playerId"]
         shortName = player_data[player_id]["shortName"]
         name = player_data[player_id]["shortName"].encode().decode("unicode-escape")
-        print(shortName)
-        print(name)
         role = json.loads(player_data[player_id]["role"].replace("'", '"'))["name"]
         foot = player_data[player_id]["foot"]
         height = player_data[player_id]["height"]
