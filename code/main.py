@@ -18,7 +18,6 @@ from plotly_football_pitch import (
 ###############################
 
 # Global variables
-
 selected_points_array = []
 
 # Pitch dimensions
@@ -187,7 +186,7 @@ st.markdown(
 # Render header
 st.write("")
 st.write("")
-st.subheader("Event visualizer")
+st.subheader("Event analyzer")
 
 selected_match_split = selected_match.replace(")", "").split("(")
 selected_match_name = selected_match_split[0]
@@ -200,13 +199,13 @@ st.markdown(
 )
 
 # Render slider
-default_period = (0, 5)
+default_period = (0, 4)
 slider_label = "The visualization below shows the locations of events \
     for a chosen event type, performed during a particular match, chosen team(s). \
     Events can be filtered by team or even by player. The time window (in minutes) \
         can be adjusted in the sidebar. The starting time (in minutes) can be set \
             using the slider below."
-game_time = st.slider("Select a time period: ", 0, 120, default_period, step=1)
+game_time = st.slider("Select a time window period: ", 0, 120, default_period, step=1)
 
 
 ################################
@@ -235,9 +234,9 @@ for event_name in selected_events:
 raw_df = raw_df.reset_index(drop=True)
 
 
-#######################
+########################
 # === Render pitch === #
-#######################
+########################
 
 # Render pitch
 fig.update_layout(
@@ -271,12 +270,99 @@ for point in selected_points:
     # TODO Add some stats about the players ?
 
 
-#######################
+#####################
+# === Play game === #
+#####################
+import time
+
+st.write("")
+st.write("")
+st.subheader("Game simulator")
+st.markdown("Press the play button to simulate the whole game.")
+
+# Render play button and slider
+play_button_column, play_speed_slider_column, play_time_slider_column, simulation_time = st.columns([0.1,0.2,0.3,0.4])
+
+## Render simulation buttons
+with play_button_column:
+    st.write("")
+    st.write("")
+    play_button = st.button("▶")
+
+with play_time_slider_column:
+    time_window = st.slider("Select a time window period: ", 1, 15, step=1)
+
+with play_speed_slider_column:
+    play_speed = st.slider("Select a play speed: ", 1, 10, step=1)
+
+with simulation_time:
+    simulation_time = st.slider("Select a simulation time: ", 1, 120, step=1, value=10)
+
+if play_button:
+    # Set the time settings
+    play_time = simulation_time - time_window
+    play_window = [0, time_window]
+
+    # Create an empty element to display the plot
+    play_plot = st.empty()
+
+    for i in range(play_time):
+        # Redefine football pitch
+        fig = make_pitch_figure(
+            dimensions,
+            pitch_background=SingleColourBackground("#A1BFA3"),
+        )
+        fig.update_layout(width=canvas_width, height=canvas_height)
+        fig.update_layout(hovermode="closest")
+
+        # Redefine arrows on pitch
+        for event_name in selected_events:
+            fig, _ = event.event_render(
+                event_name=event_name,
+                pitch_length=pitch_length,
+                pitch_width=pitch_width,
+                match=filtered_match_events,
+                game_time=play_window,
+                color=colors[event_name],
+                fig=fig,
+                player_data=selected_players_dict,
+                team_side=team_side,
+            )
+
+        # Create a Plotly figure
+        fig.update_layout(
+            title={
+                "text": selected_match_name + f"  (time: {play_window[0]} - {play_window[1]} min)",
+                "font": {"size": 20},
+                "xanchor": "center",
+                "x": 0.5,  # set x to 0.5 for center alignment
+                "y": 0.92,  # adjust y position for desired vertical alignment
+            }
+        )
+        fig.update_traces(
+            showlegend=False
+        )
+
+        # Reset plot
+        play_plot.plotly_chart(fig)
+
+        # Update play window
+        play_window[0] += 1
+        play_window[1] += 1
+
+        # Wait for 1 second
+        time.sleep(1/play_speed)
+
+    play_plot.empty()
+
+
+
+############################
 # === Raw data display === #
-#######################
+############################
 
 # Raw data checkbox
-st.sidebar.title(" ")
+st.sidebar.title("")
 st.sidebar.title("Raw data settings")
 
 # Render raw data when checkbox is ticked

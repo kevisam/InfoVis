@@ -176,7 +176,7 @@ def show_player_info(
             playerInfo = plyr
             entranceTime = "Player was in the lineup."
 
-    st.title(f"{player['shortName'].iloc[0].encode().decode('unicode_escape')}")
+    st.subheader(f"Player stats: {player['shortName'].iloc[0].encode().decode('unicode_escape')}")
 
     col1, col2, col3 = st.columns(3)
 
