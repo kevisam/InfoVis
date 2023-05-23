@@ -65,6 +65,12 @@ colors = {
     "Touch": "#767676",
 }
 
+def create_player_color(default_color, player_name):
+    decimal_number = int(default_color, 16)
+    decimal_number += len(player_name)**2
+    hex_number = hex(decimal_number)[2:].zfill(len(default_color))
+    return f"#{hex_number}"
+
 
 ##########################
 # === Render sidebar === #
@@ -183,7 +189,9 @@ if selected_events != []:
     for i,pair in enumerate(pairs):
         pair_player = pair[0].encode().decode("unicode_escape")
         pair_event = pair[1]
-        default_color = colors[pair_event]
+
+        # get color
+        default_color = create_player_color(colors[pair_event][1:], pair_player)
 
         if i%3 == 0:
             with color_col_0:
