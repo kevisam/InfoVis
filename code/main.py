@@ -65,12 +65,6 @@ colors = {
     "Touch": "#767676",
 }
 
-def create_player_color(default_color, player_name):
-    decimal_number = int(default_color, 16)
-    decimal_number += len(player_name)**2
-    hex_number = hex(decimal_number)[2:].zfill(len(default_color))
-    return f"#{hex_number}"
-
 
 ##########################
 # === Render sidebar === #
@@ -173,8 +167,8 @@ selected_events = st.sidebar.multiselect("Select an event type:", sorted(event_n
 # ======================================= #
 
 
-# Drop-down menu to select the event type #
-# ======================================= #
+# Drop-down menu to select the arrow color #
+# ======================================== #
 if selected_events != []:
     st.sidebar.write("")
     st.sidebar.header("Colors")
@@ -190,8 +184,8 @@ if selected_events != []:
         pair_player = pair[0].encode().decode("unicode_escape")
         pair_event = pair[1]
 
-        # get color
-        default_color = create_player_color(colors[pair_event][1:], pair_player)
+        # get default color
+        default_color = helper.create_player_color(colors[pair_event][1:], pair_player)
 
         if i%3 == 0:
             with color_col_0:
@@ -208,6 +202,8 @@ if selected_events != []:
                 col = st.color_picker(f"{pair_player}, {pair_event}", default_color, key=pair)
                 st.write("")
                 st.write("")
+        
+        # store selected color
         selected_colors[pair] = col
 # ======================================= #
 

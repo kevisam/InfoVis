@@ -213,4 +213,11 @@ def show_player_info(
         title=f"Rank score of {player['shortName'].iloc[0].encode().decode('unicode_escape')} compared to other players",
     )
 
-    st.plotly_chart(fig)
+    return st.plotly_chart(fig)
+
+
+def create_player_color(default_color, player_name):
+    decimal_number = int(default_color, 16)
+    decimal_number += len(player_name)**2
+    hex_number = hex(decimal_number)[2:].zfill(len(default_color))
+    return f"#{hex_number}"
