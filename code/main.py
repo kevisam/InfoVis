@@ -134,7 +134,7 @@ for i in range(len(all_match_player_names)):
 filter_by_player = st.sidebar.checkbox("Filter by player")
 if filter_by_player:
     selected_players = st.sidebar.multiselect(
-        "Select a player:", all_match_player_names, key='selected_players'
+        "Select player(s):", all_match_player_names, key='selected_players'
     )
     ## store filtered player data
     selected_players_dict = {}
@@ -162,7 +162,7 @@ filtered_match_events = helper.get_match_events(
 )
 event_names = filtered_match_events["subEventName"].unique().tolist()
 event_names = [element for element in event_names if isinstance(element, str)]
-selected_events = st.sidebar.multiselect("Select an event type:", sorted(event_names))
+selected_events = st.sidebar.multiselect("Select event type(s):", sorted(event_names))
 # ======================================= #
 
 
