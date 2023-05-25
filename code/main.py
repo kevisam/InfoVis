@@ -32,7 +32,7 @@ canvas_height = 550
 # Define football pitch
 fig = make_pitch_figure(
     dimensions,
-    pitch_background=SingleColourBackground("#A1BFA3"),
+    pitch_background=SingleColourBackground("#E9FFED"),
 )
 fig.update_layout(width=canvas_width, height=canvas_height)
 fig.update_layout(hovermode="closest")
@@ -356,7 +356,7 @@ if play_button:
         # Redefine football pitch
         fig = make_pitch_figure(
             dimensions,
-            pitch_background=SingleColourBackground("#A1BFA3"),
+            pitch_background=SingleColourBackground("#E9FFED"),
         )
         fig.update_layout(width=canvas_width, height=canvas_height)
         fig.update_layout(hovermode="closest")
@@ -420,3 +420,34 @@ if show_raw_data:
     st.write("")
     st.subheader("Raw data")
     st.write(raw_df)
+
+
+# Space for simulator
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
