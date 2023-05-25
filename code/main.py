@@ -239,16 +239,12 @@ date, time = selected_match_datetime.split(" ")
 st.markdown(
     f"You are now visualizing the game of &nbsp; '{selected_match_name}' &nbsp; \
         from the perspective of {selected_team}. This match took place \
-            on {date} and started at {time}."
+            on {date} and started at {time}. To inspect a particular event, hover over the starting point of the arrow. \
+                For more advanced player statistics of a particular event, click on the arrow starting point."
 )
 
 # Render slider
 default_period = (0, 4)
-slider_label = "The visualization below shows the locations of events \
-    for a chosen event type, performed during a particular match, chosen team(s). \
-    Events can be filtered by team or even by player. The time window (in minutes) \
-        can be adjusted in the sidebar. The starting time (in minutes) can be set \
-            using the slider below."
 game_time = st.slider("Select a time window period: ", 0, 120, default_period, step=1)
 
 
