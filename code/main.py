@@ -236,7 +236,7 @@ st.markdown(
 default_period = (0, 1)
 game_time_col, period_col = st.columns([0.7, 0.3])
 with game_time_col:
-    game_time = st.slider("Select a time window period: ", 0, 60, default_period, step=1)
+    game_time = st.slider("Select a time window period (in minutes): ", 0, 60, default_period, step=1, format="%i")
 with period_col:
     period = st.selectbox("Select a match period: ", 
                         [periodID2periodName[periodID] for periodID in filtered_match_events["matchPeriod"].unique().tolist()])
@@ -328,13 +328,13 @@ with play_button_column:
     play_button = st.button("▶")
 
 with play_time_slider_column:
-    time_window = st.slider("Select a time window period: ", 1, 15, step=1)
+    time_window = st.slider("Select a time window period: ", 1, 15, step=1, format="%i min")
 
 with play_speed_slider_column:
-    play_speed = st.slider("Select a play speed: ", 1, 10, step=1)
+    play_speed = st.slider("Select a play speed: ", 1, 10, step=1, format="%ix")
 
 with simulation_time:
-    simulation_time = st.slider("Select a simulation time: ", 1, 120, step=1, value=10)
+    simulation_time = st.slider("Select a simulation time: ", 1, 60, step=1, value=10, format="%i min")
 
 if play_button:
     st.write('<script>window.scrollTo(0,document.body.scrollHeight);</script>', unsafe_allow_html=True)
@@ -355,7 +355,7 @@ if play_button:
             dimensions,
             pitch_background=SingleColourBackground("#E9FFED"),
         )
-        fig.update_layout(width=canvas_width, height=canvas_height)
+        fig.update_layout(width=canvas_width, height=canvas_height+100)
         fig.update_layout(hovermode="closest")
 
         # Redefine arrows on pitch
