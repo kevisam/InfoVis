@@ -9,6 +9,7 @@ events = events[
         "matchId",
         "teamId",
         "playerId",
+        "matchPeriod",
         "eventSec",
         "pos_orig_y",
         "pos_orig_x",
