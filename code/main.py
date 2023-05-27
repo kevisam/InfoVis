@@ -19,6 +19,12 @@ from plotly_football_pitch import (
 
 # Global variables
 selected_points_array = []
+periodID2periodName = {"1H": "First Half", 
+                       "2H": "Second Half", 
+                       "E1": "First Extra-Time", 
+                       "E2": "First Extra-Time", 
+                       "P": "Penalties"}
+periodName2periodID = {value: key for key, value in periodID2periodName.items()}
 
 # Pitch dimensions
 pitch_length = 104
@@ -36,34 +42,6 @@ fig = make_pitch_figure(
 )
 fig.update_layout(width=canvas_width, height=canvas_height)
 fig.update_layout(hovermode="closest")
-
-# Define colors for each event type
-colors = {
-    "Acceleration": "#B00000",
-    "Air duel": "#FF6000",
-    "Clearance": "#AF7900",
-    "Corner": "#FFC200",
-    "Cross": "#FBFF00",
-    "Foul": "#C4DF00",
-    "Free Kick": "#B9FF00",
-    "Free kick cross": "#6DE100",
-    "Goal kick": "#1DCA0B",
-    "Ground attacking duel": "#2E9076",
-    "Ground defending duel": "#00FFFF",
-    "Ground loose ball duel": "#00CFFF",
-    "Hand foul": "#00AFFF",
-    "Hand pass": "#006FFF",
-    "Head pass": "#000FFF",
-    "High pass": "#4000FF",
-    "Launch": "#6400FF",
-    "Reflexes": "#8F00FF",
-    "Save attempt": "#B200FF",
-    "Shot": "#D500FF",
-    "Simple pass": "#FF00EC",
-    "Smart pass": "#FF00AA",
-    "Throw in": "#393939",
-    "Touch": "#767676",
-}
 
 
 ##########################
@@ -134,7 +112,7 @@ for i in range(len(all_match_player_names)):
 filter_by_player = st.sidebar.checkbox("Filter by player")
 if filter_by_player:
     selected_players = st.sidebar.multiselect(
-        "Select player(s):", all_match_player_names, key='selected_players'
+        "Select player(s):", sorted(all_match_player_names), key='selected_players'
     )
     ## store filtered player data
     selected_players_dict = {}
@@ -160,54 +138,65 @@ filtered_match_events = helper.get_match_events(
     teamId=selected_teamId,
     players=selected_player_Ids,
 )
+filter_by_event = st.sidebar.checkbox("Filter by event")
 event_names = filtered_match_events["subEventName"].unique().tolist()
 event_names = [element for element in event_names if isinstance(element, str)]
-selected_events = st.sidebar.multiselect("Select event type(s):", sorted(event_names))
+
+if filter_by_event:
+    selected_events = st.sidebar.multiselect("Select event type(s):", sorted(event_names))
+else:
+    selected_events = event_names
 # ======================================= #
 
 
 # Drop-down menu to select the arrow color #
 # ======================================== #
-if selected_events != []:
-    st.sidebar.write("")
-    st.sidebar.write("")
-    st.sidebar.title("Colors")
-    # create unique pairs for all events and players selected
-    from itertools import product
-    if 'selected_players' in st.session_state:
-        pairs = list(product(selected_players, selected_events))
-    else:
-        pairs = list(product(["All players"], selected_events))
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.title("Colors")
+# create unique pairs for all events and players selected
+from itertools import product
+if 'selected_players' in st.session_state:
+    pairs = list(product(st.session_state['selected_players'], selected_events))
+else:
+    pairs = list(product(["All players"], selected_events))
+pairs = sorted(pairs, key=lambda x: (x[0], x[1]))
 
-    color_col_0, color_col_1, color_col_2 = st.sidebar.columns([0.33,0.33,0.33])
+color_col_0, color_col_1, color_col_2 = st.sidebar.columns([0.33,0.33,0.33])
 
-    # suggest color for each pair
-    selected_colors = {}
-    for i,pair in enumerate(pairs):
-        pair_player = pair[0]
-        pair_event = pair[1]
+# suggest color for each pair
+selected_colors = {}
+for i,pair in enumerate(pairs):
+    pair_player = pair[0]
+    pair_event = pair[1]
 
-        # get default color
-        default_color = helper.create_color(pair_event, pair_player)
+    # get default color
+    default_color = helper.create_color(pair_event, pair_player)
 
-        if i%3 == 0:
-            with color_col_0:
-                col = st.color_picker(f"{pair_player}, {pair_event}", default_color, key=pair)
-                st.write("")
-                st.write("")
-        elif i%3 == 1:
-            with color_col_1:
-                col = st.color_picker(f"{pair_player}, {pair_event}", default_color, key=pair)
-                st.write("")
-                st.write("")
-        elif i%3 == 2:
-            with color_col_2:
-                col = st.color_picker(f"{pair_player}, {pair_event}", default_color, key=pair)
-                st.write("")
-                st.write("")
-        
-        # store selected color
-        selected_colors[pair] = col
+    if i%3 == 0:
+        with color_col_0:
+            color_pick = st.color_picker(f"{pair_player}, {pair_event}" if pair_player != "All players" else f"{pair_event}", 
+                                        default_color, 
+                                        key=pair)
+            st.write("")
+            st.write("")
+    elif i%3 == 1:
+        with color_col_1:
+            color_pick = st.color_picker(f"{pair_player}, {pair_event}" if pair_player != "All players" else f"{pair_event}", 
+                                        default_color, 
+                                        key=pair)
+            st.write("")
+            st.write("")
+    elif i%3 == 2:
+        with color_col_2:
+            color_pick = st.color_picker(f"{pair_player}, {pair_event}" if pair_player != "All players" else f"{pair_event}", 
+                                        default_color, 
+                                        key=pair)
+            st.write("")
+            st.write("")
+    
+    # store selected color
+    selected_colors[pair] = color_pick
 # ======================================= #
 
 
@@ -243,9 +232,20 @@ st.markdown(
                 For more advanced player statistics of a particular event, click on the arrow starting point."
 )
 
-# Render slider
-default_period = (0, 4)
-game_time = st.slider("Select a time window period: ", 0, 120, default_period, step=1)
+# Render slider and period selector
+default_period = (0, 1)
+game_time_col, period_col = st.columns([0.7, 0.3])
+with game_time_col:
+    game_time = st.slider("Select a time window period: ", 0, 60, default_period, step=1)
+with period_col:
+    period = st.selectbox("Select a match period: ", 
+                        [periodID2periodName[periodID] for periodID in filtered_match_events["matchPeriod"].unique().tolist()])
+
+if period != None:
+    filtered_match_events = filtered_match_events[
+            filtered_match_events["matchPeriod"] == periodName2periodID[period]
+        ]
+
 
 
 ################################
@@ -263,7 +263,6 @@ for event_name in selected_events:
         pitch_width=pitch_width,
         match=filtered_match_events,
         game_time=game_time,
-        name_encoding_dict=name_encoding_dict,
         selected_colors=selected_colors,
         fig=fig,
         player_data=selected_players_dict,
@@ -316,8 +315,6 @@ for point in selected_points:
 #####################
 import time
 
-st.write("")
-st.write("")
 st.subheader("Game simulator")
 st.markdown("Use the sliders to specify your settings. Press the play button to simulate the whole game.")
 
@@ -369,7 +366,6 @@ if play_button:
                 pitch_width=pitch_width,
                 match=filtered_match_events,
                 game_time=play_window,
-                name_encoding_dict=name_encoding_dict,
                 selected_colors=selected_colors,
                 fig=fig,
                 player_data=selected_players_dict,

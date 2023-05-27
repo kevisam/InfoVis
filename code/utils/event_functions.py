@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 def event_render(
-    event_name, pitch_length, pitch_width, match, game_time, name_encoding_dict, selected_colors, fig, player_data, team_side
+    event_name, pitch_length, pitch_width, match, game_time, selected_colors, fig, player_data, team_side
 ):
     """
     For a given match ID and game time, returns plot elements that
@@ -77,6 +77,7 @@ def event_render(
             y=[start_point[1]],
             mode="markers",
             marker={"size": 7, "color": color},
+            showlegend=False,
             hovertemplate=f"Name: &nbsp; {name}<br>"
             + f"Role: &nbsp; {role}<br>"
             + f"Age: &nbsp; {age}<br>"
