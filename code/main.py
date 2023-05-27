@@ -229,7 +229,8 @@ st.markdown(
     f"You are now visualizing the game of &nbsp; '{selected_match_name}' &nbsp; \
         from the perspective of {selected_team}. This match took place \
             on {date} and started at {time}. To inspect a particular event, hover over the starting point of the arrow. \
-                For more advanced player statistics of a particular event, click on the arrow starting point."
+                For more advanced player statistics of a particular event, click on the arrow starting point \
+                    or select multiple points using the Box / Lasso selection tool."
 )
 
 # Render slider and period selector
