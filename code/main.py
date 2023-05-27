@@ -138,7 +138,7 @@ filtered_match_events = helper.get_match_events(
     teamId=selected_teamId,
     players=selected_player_Ids,
 )
-filter_by_event = st.sidebar.checkbox("Filter by event")
+filter_by_event = st.sidebar.checkbox("Filter by event type")
 event_names = filtered_match_events["subEventName"].unique().tolist()
 event_names = [element for element in event_names if isinstance(element, str)]
 
