@@ -303,10 +303,13 @@ with stats_tab:
 
     # Show the events related to each selected point
     # Here we add on click or on selection events for the points.
+    player_stat_names = []
     for point in selected_points:
-        helper.show_player_info(
-            point, matchId, team_side, pitch_length, pitch_width, raw_df
+        player_name = helper.show_player_info(
+            point, matchId, team_side, pitch_length, pitch_width, raw_df, player_stat_names
         )
+        if player_name is not None:
+            player_stat_names.append(player_name)
 
 
 ################################

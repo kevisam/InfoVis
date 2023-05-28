@@ -136,7 +136,7 @@ def get_playerrank(playerId, matchId):
 
 # Player plotting
 def show_player_info(
-    point, matchId, team_side, pitch_length, pitch_width, current_events
+    point, matchId, team_side, pitch_length, pitch_width, current_events, player_stat_names
 ):
     """Returns a plot visual of player information and statistics"""
 
@@ -149,6 +149,8 @@ def show_player_info(
         current_events,
     )
     playerId = origpoint["playerId"]
+    if playerId.empty:
+        return None
     player = find_player(playerId)
     match_team_id = str(int(origpoint["teamId"]))
 
@@ -193,7 +195,11 @@ def show_player_info(
             playerInfo = plyr
             entranceTime = "Player was in the lineup."
 
-    st.subheader(f"Player stats: {player['shortName'].iloc[0].encode().decode('unicode_escape')}")
+    player_name = f"{player['shortName'].iloc[0].encode().decode('unicode_escape')}"
+    if player_name in player_stat_names:
+        return None
+    
+    st.subheader(f"Player stats: {player_name}")
 
     col1, col2, col3 = st.columns(3)
 
@@ -227,10 +233,12 @@ def show_player_info(
         ],
         xaxis=dict(title="Player Rank Score Range", tickformat=".0%"),
         yaxis=dict(title="Number of Players"),
-        title=f"Rank score of {player['shortName'].iloc[0].encode().decode('unicode_escape')} compared to other players in the match",
+        title=f"Rank score of {player_name} compared to other players in the match",
     )
 
-    return st.plotly_chart(fig)
+    st.plotly_chart(fig)
+
+    return player_name
 
 
 def create_color(event, player):
