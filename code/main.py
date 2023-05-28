@@ -219,7 +219,7 @@ st.markdown(
 # Render header
 st.write("")
 st.write("")
-st.subheader("Event analyzer")
+st.subheader("Game Analyzer")
 
 selected_match_split = selected_match.replace(")", "").split("(")
 selected_match_name = selected_match_split[0]
@@ -228,179 +228,177 @@ date, time = selected_match_datetime.split(" ")
 st.markdown(
     f"You are now visualizing the game of &nbsp; '{selected_match_name}' &nbsp; \
         from the perspective of {selected_team}. This match took place \
-            on {date} and started at {time}. To inspect a particular event, hover over the starting point of the arrow. \
-                For more advanced player statistics of a particular event, click on the arrow starting point \
-                    or select multiple points using the Box / Lasso selection tool."
+            on {date} and started at {time}."
 )
 
-# Render slider and period selector
-default_period = (0, 1)
-game_time_col, period_col = st.columns([0.7, 0.3])
-with game_time_col:
-    game_time = st.slider("Select a time window period (in minutes): ", 0, 60, default_period, step=1, format="%i")
-with period_col:
-    period = st.selectbox("Select a match period: ", 
-                        [periodID2periodName[periodID] for periodID in filtered_match_events["matchPeriod"].unique().tolist()])
-
-if period != None:
-    filtered_match_events = filtered_match_events[
-            filtered_match_events["matchPeriod"] == periodName2periodID[period]
-        ]
+# Create one tab for the game simulator, and one tab for 
+stats_tab, simulator_tab = st.tabs(["Statistics", "Simulation"])
 
 
+############################
+# === Render Stats Tab === #
+############################
 
-################################
-# === Define pitch objects === #
-################################
+with stats_tab:
+    st.markdown("")
+    st.markdown(f"To inspect a particular event for its stats, hover over the starting point of the arrow. \
+                For more advanced player statistics of a particular event, click on the arrow's starting point \
+                    or select multiple points at once using the Box / Lasso selection tool.")
 
-# Define empty df for raw display of data
-raw_df = filtered_match_events.drop(labels=filtered_match_events.index, axis=0)
+    # Render slider and period selector
+    default_period = (0, 1)
+    game_time_col, period_col = st.columns([0.7, 0.3])
+    with game_time_col:
+        game_time = st.slider("Select a time window period (in minutes): ", 0, 60, default_period, step=1, format="%i")
+    with period_col:
+        period = st.selectbox("Select a match period: ", 
+                            [periodID2periodName[periodID] for periodID in filtered_match_events["matchPeriod"].unique().tolist()])
 
-# Define arrows on pitch
-for event_name in selected_events:
-    fig, high_pass_df = event.event_render(
-        event_name=event_name,
-        pitch_length=pitch_length,
-        pitch_width=pitch_width,
-        match=filtered_match_events,
-        game_time=game_time,
-        selected_colors=selected_colors,
-        fig=fig,
-        player_data=selected_players_dict,
-        team_side=team_side,
-    )
-    raw_df = pd.concat([raw_df, high_pass_df], axis=0)
+    if period != None:
+        filtered_match_events = filtered_match_events[
+                filtered_match_events["matchPeriod"] == periodName2periodID[period]
+            ]
 
-# Reset indexing on df for raw data display
-raw_df = raw_df.reset_index(drop=True)
+    # Define empty df for raw display of data
+    raw_df = filtered_match_events.drop(labels=filtered_match_events.index, axis=0)
 
-
-########################
-# === Render pitch === #
-########################
-
-# Render pitch
-fig.update_layout(
-    title={
-        "text": selected_match_name,
-        "font": {"size": 20},
-        "xanchor": "center",
-        "x": 0.5,  # set x to 0.5 for center alignment
-        "y": 0.92,  # adjust y position for desired vertical alignment
-    }
-)
-fig.update_traces(
-    showlegend=False
-)  # Remove the legend on the traces. This removes the traces names
-
-# Create a plot where we can retrieve on click events, and select events (Lasso or Rectangle selection)
-selected_points = plotly_events(
-    fig,
-    select_event=True,
-    click_event=True,
-    override_height=canvas_height,  # Height of the canvas created
-    override_width=canvas_width,  # Width of the canvas created
-)
-
-# Show the events related to each selected point
-# Here we can add on click or on selection events for the points.
-for point in selected_points:
-    helper.show_player_info(
-        point, matchId, team_side, pitch_length, pitch_width, raw_df
-    )
-    # TODO Add some stats about the players ?
-
-
-#####################
-# === Play game === #
-#####################
-import time
-
-st.subheader("Game simulator")
-st.markdown("Use the sliders to specify your settings. Press the play button to simulate the whole game.")
-
-# Render play button and slider
-play_button_column, play_speed_slider_column, play_time_slider_column, simulation_time = st.columns([0.1,0.2,0.3,0.4])
-
-## Render simulation buttons
-with play_button_column:
-    st.write("")
-    st.write("")
-    play_button = st.button("▶")
-
-with play_time_slider_column:
-    time_window = st.slider("Select a time window period: ", 1, 15, step=1, format="%i min")
-
-with play_speed_slider_column:
-    play_speed = st.slider("Select a play speed: ", 1, 10, step=1, format="%ix")
-
-with simulation_time:
-    simulation_time = st.slider("Select a simulation time: ", 1, 60, step=1, value=10, format="%i min")
-
-if play_button:
-    st.write('<script>window.scrollTo(0,document.body.scrollHeight);</script>', unsafe_allow_html=True)
-    # Set the time settings
-    play_time = simulation_time - time_window
-    play_window = [0, time_window]
-
-    # Create an empty element to display the plot
-    stop_button = st.button("Stop simulation", key='stop_simulation')
-    play_plot = st.empty()
-
-    for i in range(play_time+1):
-        # Break if stop has been clicked
-        if stop_button:
-            break
-        # Redefine football pitch
-        fig = make_pitch_figure(
-            dimensions,
-            pitch_background=SingleColourBackground("#E9FFED"),
+    # Define arrows on pitch
+    for event_name in selected_events:
+        fig, high_pass_df = event.event_render(
+            event_name=event_name,
+            pitch_length=pitch_length,
+            pitch_width=pitch_width,
+            match=filtered_match_events,
+            game_time=game_time,
+            selected_colors=selected_colors,
+            fig=fig,
+            player_data=selected_players_dict,
+            team_side=team_side,
         )
-        fig.update_layout(width=canvas_width, height=canvas_height+100)
-        fig.update_layout(hovermode="closest")
+        raw_df = pd.concat([raw_df, high_pass_df], axis=0)
 
-        # Redefine arrows on pitch
-        for event_name in selected_events:
-            fig, _ = event.event_render(
-                event_name=event_name,
-                pitch_length=pitch_length,
-                pitch_width=pitch_width,
-                match=filtered_match_events,
-                game_time=play_window,
-                selected_colors=selected_colors,
-                fig=fig,
-                player_data=selected_players_dict,
-                team_side=team_side,
+    # Reset indexing on df for raw data display
+    raw_df = raw_df.reset_index(drop=True)
+
+    # Render pitch
+    fig.update_layout(
+        title={
+            "text": selected_match_name,
+            "font": {"size": 20},
+            "xanchor": "center",
+            "x": 0.5,  # set x to 0.5 for center alignment
+            "y": 0.92,  # adjust y position for desired vertical alignment
+        }
+    )
+    fig.update_traces(
+        showlegend=False
+    )  # Remove the legend on the traces. This removes the traces names
+
+    # Create a plot where we can retrieve on click events, and select events (Lasso or Rectangle selection)
+    selected_points = plotly_events(
+        fig,
+        select_event=True,
+        click_event=True,
+        override_height=canvas_height,  # Height of the canvas created
+        override_width=canvas_width,  # Width of the canvas created
+    )
+
+    # Show the events related to each selected point
+    # Here we add on click or on selection events for the points.
+    for point in selected_points:
+        helper.show_player_info(
+            point, matchId, team_side, pitch_length, pitch_width, raw_df
+        )
+
+
+################################
+# === Render Simulator Tab === #
+################################
+
+with simulator_tab:
+    import time
+    st.markdown("")
+    st.markdown("Use the sliders to specify your simulation settings. Press the play button to simulate the whole game.")
+
+    # Render play button and slider
+    play_button_column, play_speed_slider_column, play_time_slider_column, simulation_time = st.columns([0.1,0.2,0.3,0.4])
+
+    ## Render simulation buttons
+    with play_button_column:
+        st.write("")
+        st.write("")
+        play_button = st.button("▶")
+
+    with play_time_slider_column:
+        time_window = st.slider("Select a time window period: ", 1, 15, step=1, format="%i min")
+
+    with play_speed_slider_column:
+        play_speed = st.slider("Select a play speed: ", 1, 10, step=1, format="%ix")
+
+    with simulation_time:
+        simulation_time = st.slider("Select a simulation time: ", 1, 60, step=1, value=10, format="%i min")
+
+    if play_button:
+        # Set the time settings
+        play_time = simulation_time - time_window
+        play_window = [0, time_window]
+
+        # Create an empty element to display the plot
+        stop_button = st.button("Stop simulation", key='stop_simulation')
+        plot = st.empty()
+
+        for i in range(play_time+1):
+            # Break if stop has been clicked
+            if stop_button:
+                break
+            # Redefine football pitch
+            fig = make_pitch_figure(
+                dimensions,
+                pitch_background=SingleColourBackground("#E9FFED"),
+            )
+            fig.update_layout(width=canvas_width, height=canvas_height+100)
+            fig.update_layout(hovermode="closest")
+
+            # Redefine arrows on pitch
+            for event_name in selected_events:
+                fig, _ = event.event_render(
+                    event_name=event_name,
+                    pitch_length=pitch_length,
+                    pitch_width=pitch_width,
+                    match=filtered_match_events,
+                    game_time=play_window,
+                    selected_colors=selected_colors,
+                    fig=fig,
+                    player_data=selected_players_dict,
+                    team_side=team_side,
+                )
+
+            # Create a Plotly figure
+            fig.update_layout(
+                title={
+                    "text": selected_match_name + f"  (time: {play_window[0]} - {play_window[1]} min)",
+                    "font": {"size": 20},
+                    "xanchor": "center",
+                    "x": 0.5,  # set x to 0.5 for center alignment
+                    "y": 0.92,  # adjust y position for desired vertical alignment
+                }
+            )
+            fig.update_traces(
+                showlegend=False
             )
 
-        # Create a Plotly figure
-        fig.update_layout(
-            title={
-                "text": selected_match_name + f"  (time: {play_window[0]} - {play_window[1]} min)",
-                "font": {"size": 20},
-                "xanchor": "center",
-                "x": 0.5,  # set x to 0.5 for center alignment
-                "y": 0.92,  # adjust y position for desired vertical alignment
-            }
-        )
-        fig.update_traces(
-            showlegend=False
-        )
+            # Reset plot
+            plot.plotly_chart(fig)
 
-        # Reset plot
-        play_plot.plotly_chart(fig)
+            # Update play window
+            play_window[0] += 1
+            play_window[1] += 1
 
-        # Update play window
-        play_window[0] += 1
-        play_window[1] += 1
+            # Wait
+            time.sleep(2/play_speed)
 
-        # Wait
-        time.sleep(2/play_speed)
-
-    play_plot.empty()
-    st.experimental_rerun()
-
-
+        plot.empty()
+        st.experimental_rerun()
 
 ############################
 # === Raw data display === #
@@ -417,34 +415,3 @@ if show_raw_data:
     st.write("")
     st.subheader("Raw data")
     st.write(raw_df)
-
-
-# Space for simulator
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
