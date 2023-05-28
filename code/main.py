@@ -3,8 +3,6 @@ import pandas as pd
 import streamlit as st
 import utils.event_functions as event
 import utils.helper_functions as helper
-import plotly.express as px
-import plotly.graph_objects as go
 from streamlit_plotly_events import plotly_events
 from plotly_football_pitch import (
     make_pitch_figure,
