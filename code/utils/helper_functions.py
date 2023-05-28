@@ -90,6 +90,7 @@ def find_original_point(x, y, team_side, pitch_length, pitch_width, events_data)
 
 
 def get_specific_match_data(matchId):
+    """Returns the data of a given match"""
     data = load_all_matches()
 
     data = data[data["wyId"] == matchId]
@@ -98,6 +99,7 @@ def get_specific_match_data(matchId):
 
 
 def find_player(playerId):
+    """Returns the data of a given player"""
     players_data = load_all_players()
 
     filtered_data = players_data[players_data["wyId"] == int(playerId)]
@@ -105,11 +107,13 @@ def find_player(playerId):
 
 
 def rank_rescaler(x, old_max, old_min):
+    """Rescales the rankings to a value between 0 and 100 (%)"""
     y = 1/(old_max-old_min) * x - (1/(old_max-old_min))*old_min
     return y
 
 
 def get_playerrank_data():
+    """Returns the data for all player ranks"""
     data = pd.read_csv(rank_path)
 
     # scale scores
@@ -121,6 +125,7 @@ def get_playerrank_data():
 
 
 def get_playerrank(playerId, matchId):
+    """Returns the rank of a player in a given match"""
     data = get_playerrank_data()
 
     match_data = data[data["matchId"] == int(matchId)]
@@ -133,6 +138,8 @@ def get_playerrank(playerId, matchId):
 def show_player_info(
     point, matchId, team_side, pitch_length, pitch_width, current_events
 ):
+    """Returns a plot visual of player information and statistics"""
+
     origpoint = find_original_point(
         point["x"],
         point["y"],
@@ -227,11 +234,13 @@ def show_player_info(
 
 
 def create_color(event, player):
+    """Returns a hex color code based on event and player name"""
     decimal_number = str2int(event + player)
     hex_number = hex(decimal_number)[2:8]
     return f"#{hex_number}"
 
 def str2int(string):
+    """Converts a string into an integer based on ascii values"""
     result = 0
     for char in string:
         # Convert each character to its ASCII value

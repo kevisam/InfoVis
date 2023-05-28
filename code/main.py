@@ -200,9 +200,9 @@ for i,pair in enumerate(pairs):
 # ======================================= #
 
 
-#######################
-# === Render page === #
-#######################
+############################
+# === Render main page === #
+############################
 
 # Render title
 st.title("Football Game Statistics Visualized")
@@ -399,6 +399,7 @@ with simulator_tab:
 
         plot.empty()
         st.experimental_rerun()
+
 
 ############################
 # === Raw data display === #
