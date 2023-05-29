@@ -1,4 +1,4 @@
-# Information Visualization - Project
+# Information Visualization - Project (Group 7)
 
 ## Authors
 
